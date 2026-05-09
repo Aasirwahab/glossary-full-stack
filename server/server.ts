@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
+import morgan from "morgan";
 import authRouter from "./routes/authRoutes.js";
 import productRouter from "./routes/productRoutes.js";
 import uploadRouter from "./routes/uploadRoutes.js";
@@ -11,19 +12,31 @@ import addressRouter from "./routes/addressRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
 import deliveryPartnerRouter from "./routes/deliveryPartnerRoutes.js";
 import { stripeWebhook } from "./controllers/webhooks.js";
+import { prisma } from "./config/prisma.js";
 
 const app = express();
 
 app.post("/api/stripe", express.raw({ type: "application/json" }), stripeWebhook);
 
 // Middleware
-app.use(cors());
+const allowedOrigins = process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",").map((o) => o.trim()) : [];
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
+app.use(morgan("dev"));
 
 const port = process.env.PORT || 5000;
 
 app.get("/", (req: Request, res: Response) => {
     res.send("Server is Live!");
+});
+
+app.get("/health", async (req: Request, res: Response) => {
+    try {
+        await prisma.$queryRawUnsafe("SELECT 1");
+        res.json({ status: "ok", db: "connected" });
+    } catch {
+        res.status(503).json({ status: "error", db: "disconnected" });
+    }
 });
 app.use("/api/auth", authRouter);
 app.use("/api/products", productRouter);

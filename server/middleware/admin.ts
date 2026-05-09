@@ -12,9 +12,7 @@ const admin = async (req: Request, res: Response, next: NextFunction) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const adminEmails = process.env.ADMIN_EMAILS ? process.env.ADMIN_EMAILS.split(",").map((e) => e.trim().toLowerCase()) : [];
-
-        if (adminEmails.includes(user.email.toLowerCase())) {
+        if (user.role === "admin") {
             if (req.user) req.user.isAdmin = true;
             next();
         } else {

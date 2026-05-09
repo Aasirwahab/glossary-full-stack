@@ -6,6 +6,7 @@ export const getFlashDeals = async (req: Request, res: Response) => {
     const products = await prisma.product.findMany({
         where: { stock: { gt: 0 } },
         orderBy: { originalPrice: "desc" },
+        take: 8,
     });
 
     const productsWithDiscount = products.map((p: any) => {
@@ -13,7 +14,7 @@ export const getFlashDeals = async (req: Request, res: Response) => {
         return { ...p, discount };
     });
 
-    res.json({ products: productsWithDiscount.slice(0, 8) });
+    res.json({ products: productsWithDiscount });
 };
 
 // GET /api/products

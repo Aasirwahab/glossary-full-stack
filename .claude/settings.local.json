@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "PowerShell(node -v)"
+      "PowerShell(node -v)",
+      "Bash(Get-ChildItem -Path \"D:\\\\Work new\\\\104719_Grocerydeliveryfullstackinstacart\\\\grocery-delivery-fullstack\" -Force)",
+      "Bash(Select-Object Name, PSIsContainer)",
+      "Bash(del \"D:\\\\Work new\\\\104719_Grocerydeliveryfullstackinstacart\\\\grocery-delivery-fullstack\\\\server\\\\set-admin.ts\")"
     ]
   }
 }

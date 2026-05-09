@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import crypto from "crypto";
 import { prisma } from "../config/prisma.js";
 import bcrypt from "bcrypt";
 
@@ -20,7 +21,8 @@ export const getAdminStats = async (req: Request, res: Response) => {
             },
         }),
     ]);
-    res.json({ totalOrders, totalUsers, totalProducts, outOfStock, totalPartners, recentOrders });
+    const totalAdmins = await prisma.user.count({ where: { role: "admin" } });
+    res.json({ totalOrders, totalUsers, totalProducts, outOfStock, totalPartners, totalAdmins, recentOrders });
 };
 
 // get delivery partners list for admin
@@ -75,29 +77,81 @@ export const assignDeliveryPartner = async (req: Request, res: Response) => {
         where: { id: req.params.id as string },
     });
 
+    if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+    }
+
     const partner = await prisma.deliveryPartner.findUnique({
         where: { id: partnerId },
     });
 
-    const otp = String(Math.floor(100000 + Math.random() * 900000));
+    if (!partner) {
+        return res.status(404).json({ message: "Delivery partner not found" });
+    }
 
-    let status = order!.status;
+    const otp = String(crypto.randomInt(100000, 999999));
 
-    const history: any[] = Array.isArray(order!.statusHistory) ? order!.statusHistory : [];
+    let status = order.status;
 
-    if (order!.status === "Placed" || order!.status === "Confirmed") {
+    const history: any[] = Array.isArray(order.statusHistory) ? order.statusHistory : [];
+
+    if (order.status === "Placed" || order.status === "Confirmed") {
         status = "Assigned";
         history.push({
             status: "Assigned",
-            note: `Assigned to ${partner!.name}`,
+            note: `Assigned to ${partner.name}`,
             timestamp: new Date(),
         });
     }
 
     await prisma.order.update({
-        where: { id: order!.id },
-        data: { deliveryPartnerId: partner!.id, deliveryOtp: otp, status, statusHistory: history },
+        where: { id: order.id },
+        data: { deliveryPartnerId: partner.id, deliveryOtp: otp, status, statusHistory: history },
     });
 
     res.json({ order });
+};
+
+// Get all users (admin)
+export const getUsers = async (req: Request, res: Response) => {
+    const users = await prisma.user.findMany({
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            role: true,
+            isVerified: true,
+            createdAt: true,
+            _count: { select: { orders: true } },
+        },
+        orderBy: { createdAt: "desc" },
+    });
+    res.json({ users });
+};
+
+// Update user role (admin)
+export const updateUserRole = async (req: Request, res: Response) => {
+    const { role } = req.body;
+
+    if (!["user", "admin"].includes(role)) {
+        return res.status(400).json({ message: "Invalid role. Must be 'user' or 'admin'" });
+    }
+
+    // Prevent removing the last admin
+    if (role === "user") {
+        const adminCount = await prisma.user.count({ where: { role: "admin" } });
+        const targetUser = await prisma.user.findUnique({ where: { id: req.params.id as string } });
+        if (adminCount <= 1 && targetUser?.role === "admin") {
+            return res.status(400).json({ message: "Cannot remove the last admin" });
+        }
+    }
+
+    const user = await prisma.user.update({
+        where: { id: req.params.id as string },
+        data: { role },
+        select: { id: true, name: true, email: true, role: true, isVerified: true },
+    });
+
+    res.json({ user });
 };

@@ -1,5 +1,5 @@
 import { Navigate, NavLink, Outlet } from "react-router-dom";
-import { PlusIcon, PackageSearchIcon, ShoppingBagIcon, LogOutIcon, BarChart3Icon, ShieldIcon, Truck } from "lucide-react";
+import { PlusIcon, PackageSearchIcon, ShoppingBagIcon, LogOutIcon, BarChart3Icon, ShieldIcon, Truck, UsersIcon } from "lucide-react";
 import Navbar from "../../components/Navbar";
 import { useAuth } from "../../context/AuthContext";
 
@@ -12,6 +12,7 @@ export default function AdminLayout() {
         { to: "/admin/products", label: "Products", icon: PackageSearchIcon },
         { to: "/admin/orders", label: "Orders", icon: ShoppingBagIcon },
         { to: "/admin/delivery-partners", label: "Delivery Partners", icon: Truck },
+        { to: "/admin/users", label: "Users", icon: UsersIcon },
         { to: "/", label: "Exit", icon: LogOutIcon },
     ];
     if (loading) {

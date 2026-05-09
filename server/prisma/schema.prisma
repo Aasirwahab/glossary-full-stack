@@ -8,16 +8,21 @@ datasource db {
 }
 
 model User {
-    id        String    @id @default(uuid())
-    name      String
-    email     String    @unique
-    password  String
-    phone     String?   @default("")
-    avatar    String?   @default("")
-    addresses Address[]
-    orders    Order[]
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
+    id                String    @id @default(uuid())
+    name              String
+    email             String    @unique
+    password          String
+    phone             String?   @default("")
+    avatar            String?   @default("")
+    role              String    @default("user")
+    isVerified        Boolean   @default(false)
+    verificationToken String?
+    resetToken        String?
+    resetTokenExpiry  DateTime?
+    addresses         Address[]
+    orders            Order[]
+    createdAt         DateTime  @default(now())
+    updatedAt         DateTime  @updatedAt
 }
 
 model Address {

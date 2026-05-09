@@ -114,16 +114,20 @@ export const cancelDelivery = async (req: Request, res: Response) => {
         where: { id: req.params.id as string, deliveryPartnerId: req.partner!.id },
     });
 
-    if (order!.status === "Delivered") {
+    if (!order) {
+        return res.status(404).json({ message: "Delivery not found" });
+    }
+
+    if (order.status === "Delivered") {
         return res.status(400).json({ message: "Cannot cancel a delivered order" });
     }
 
-    const history = order!.statusHistory as any[];
+    const history = order.statusHistory as any[];
 
     history.push({ status: "Cancelled", note: reason || "", timestamp: new Date() });
 
     const updatedOrder = await prisma.order.update({
-        where: { id: order!.id },
+        where: { id: order.id },
         data: { status: "Cancelled", statusHistory: history },
     });
 
@@ -144,12 +148,16 @@ export const updateDeliveryStatus = async (req: Request, res: Response) => {
         where: { id: req.params.id as string, deliveryPartnerId: req.partner!.id },
     });
 
-    const history = order!.statusHistory as any[];
+    if (!order) {
+        return res.status(404).json({ message: "Delivery not found" });
+    }
+
+    const history = order.statusHistory as any[];
 
     history.push({ status, note: `Status updated to ${status}`, timestamp: new Date() });
 
     const updatedOrder = await prisma.order.update({
-        where: { id: order!.id },
+        where: { id: order.id },
         data: { status, statusHistory: history },
     });
 
@@ -168,8 +176,12 @@ export const updateLocation = async (req: Request, res: Response) => {
         },
     });
 
+    if (!order) {
+        return res.status(404).json({ message: "Active delivery not found" });
+    }
+
     await prisma.order.update({
-        where: { id: order!.id },
+        where: { id: order.id },
         data: { liveLocation: { lat, lng, updatedAt: new Date() } },
     });
 

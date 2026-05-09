@@ -18,9 +18,13 @@ import AdminProducts from "./pages/admin/AdminProducts";
 import AdminProductForm from "./pages/admin/AdminProductForm";
 import AdminOrders from "./pages/admin/AdminOrders";
 import AdminDeliveryPartners from "./pages/admin/AdminDeliveryPartners";
+import AdminUsers from "./pages/admin/AdminUsers";
 import DeliveryLogin from "./pages/delivery/DeliveryLogin";
 import DeliveryLayout from "./pages/delivery/DeliveryLayout";
 import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import VerifyEmail from "./pages/VerifyEmail";
 
 const App = () => {
     return (
@@ -30,6 +34,9 @@ const App = () => {
             <Routes>
                 {/* Auth pages - No Navbar/Footer */}
                 <Route path="/login" element={<Login />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/verify-email" element={<VerifyEmail />} />
                 {/* Main pages - With Navbar/Footer */}
                 <Route path="/" element={<AppLayout />}>
                     <Route index element={<Home />} />
@@ -52,6 +59,7 @@ const App = () => {
                     <Route path="products/:id/edit" element={<AdminProductForm />} />
                     <Route path="orders" element={<AdminOrders />} />
                     <Route path="delivery-partners" element={<AdminDeliveryPartners />} />
+                    <Route path="users" element={<AdminUsers />} />
                 </Route>
 
                 {/* Delivery Partner pages */}

@@ -41,8 +41,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setToken(data.token);
             localStorage.setItem("auth_token", data.token);
             localStorage.setItem("auth_user", JSON.stringify(data.user));
+            if (data.refreshToken) {
+                localStorage.setItem("auth_refresh_token", data.refreshToken);
+            }
             toast.success("Login successful");
-            navigate("/");
+            if (data.user.isAdmin) {
+                navigate("/admin");
+            } else {
+                navigate("/");
+            }
         } catch (error: any) {
             toast.error(error?.response?.data?.message || error?.message);
         }
@@ -55,7 +62,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setToken(data.token);
             localStorage.setItem("auth_token", data.token);
             localStorage.setItem("auth_user", JSON.stringify(data.user));
-            toast.success("Registration successful");
+            if (data.refreshToken) {
+                localStorage.setItem("auth_refresh_token", data.refreshToken);
+            }
+            toast.success("Registration successful! Please check your email to verify your account.");
             navigate("/");
         } catch (error: any) {
             toast.error(error?.response?.data?.message || error?.message);
@@ -67,6 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setToken(null);
         localStorage.removeItem("auth_token");
         localStorage.removeItem("auth_user");
+        localStorage.removeItem("auth_refresh_token");
     };
 
     const updateUser = (userData: Partial<User>) => {

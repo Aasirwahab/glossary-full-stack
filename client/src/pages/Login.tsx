@@ -88,6 +88,14 @@ const Login = () => {
                         <button type="submit" disabled={loading} className="flex-center w-full py-3 bg-green-950 text-white font-semibold rounded-xl hover:bg-green-900 transition-colors disabled:opacity-50">
                             {loading ? <Loader2Icon className="animate-spin" /> : isLoginState ? "Sign In" : "Sign Up"}
                         </button>
+
+                        {isLoginState && (
+                            <p className="text-center text-sm mt-2">
+                                <Link to="/forgot-password" className="text-orange-500 font-semibold hover:text-orange-600 transition-colors">
+                                    Forgot your password?
+                                </Link>
+                            </p>
+                        )}
                     </form>
                 </div>
             </div>

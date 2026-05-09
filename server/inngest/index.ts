@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { cron, Inngest } from "inngest";
 import { prisma } from "../config/prisma.js";
 import sendEmail from "../config/nodemailer.js";
@@ -196,7 +197,7 @@ const autoAssignRider = inngest.createFunction(
             if (!availableRider) return { skipped: true, reason: "No riders available" };
 
             // Generate 6-digit OTP
-            const otp = Math.floor(100000 + Math.random() * 900000).toString();
+            const otp = String(crypto.randomInt(100000, 999999));
 
             const history = (Array.isArray(order.statusHistory) ? order.statusHistory : []) as any[];
             history.push({

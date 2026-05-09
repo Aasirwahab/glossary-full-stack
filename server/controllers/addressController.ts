@@ -103,11 +103,15 @@ export const updateAddress = async (req: Request, res: Response) => {
 // Delete address
 // DELETE /api/addresses/:id
 export const deleteAddress = async (req: Request, res: Response) => {
-    try {
-        await prisma.address.delete({ where: { id: req.params.id as string } });
-    } catch (err: any) {
-        console.log(err.message);
+    const address = await prisma.address.findFirst({
+        where: { id: req.params.id as string, userId: req.user!.id },
+    });
+
+    if (!address) {
+        return res.status(404).json({ message: "Address not found" });
     }
+
+    await prisma.address.delete({ where: { id: address.id } });
 
     const addresses = await prisma.address.findMany({
         where: { userId: req.user!.id },
