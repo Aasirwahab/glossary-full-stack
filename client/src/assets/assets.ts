@@ -46,7 +46,7 @@ export const deliveryPartnerLoginImage = "https://images.unsplash.com/photo-1610
 
 export const appPromoBannerData = {
     title: "Get fresh groceries in minutes",
-    description: "Download the Instacart app for exclusive deals, real-time tracking, and the freshest selection delivered right to your door.",
+    description: "Enjoy exclusive deals, real-time order tracking, and the freshest selection delivered right to your door — all from your browser.",
 };
 
 export const footerData = {
