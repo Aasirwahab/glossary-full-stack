@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { BikeIcon } from "lucide-react";
+import { BikeIcon, ShoppingBagIcon } from "lucide-react";
 import { heroSectionData } from "../../assets/assets";
 import api from "../../config/api";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function DeliveryLogin() {
     const navigate = useNavigate();
@@ -69,6 +69,14 @@ export default function DeliveryLogin() {
                             {loading ? "Signing in..." : "Sign In"}
                         </button>
                     </form>
+
+                    {/* Customer Login Link */}
+                    <div className="mt-6 pt-6 border-t border-app-border text-center">
+                        <p className="text-xs text-app-text-light mb-2">Are you a customer?</p>
+                        <Link to="/login" className="inline-flex items-center gap-1.5 text-sm font-semibold text-app-green hover:text-app-green-light transition-colors">
+                            <ShoppingBagIcon className="size-4" /> Go to Customer Login
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>

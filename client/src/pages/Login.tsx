@@ -97,6 +97,14 @@ const Login = () => {
                             </p>
                         )}
                     </form>
+
+                    {/* Delivery Partner Link */}
+                    <div className="mt-6 pt-6 border-t border-app-border text-center">
+                        <p className="text-xs text-app-text-light mb-2">Are you a delivery partner?</p>
+                        <Link to="/delivery/login" className="inline-flex items-center gap-1.5 text-sm font-semibold text-app-green hover:text-app-green-light transition-colors">
+                            <BikeIcon className="size-4" /> Go to Delivery Partner Login
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>

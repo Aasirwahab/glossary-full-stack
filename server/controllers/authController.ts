@@ -242,3 +242,57 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
         return res.status(401).json({ message: "Invalid or expired refresh token" });
     }
 };
+
+// Update Profile
+// PUT /api/auth/profile
+export const updateProfile = async (req: Request, res: Response) => {
+    const { name, phone } = req.body;
+
+    if (!name?.trim()) {
+        return res.status(400).json({ message: "Name is required" });
+    }
+
+    const user = await prisma.user.update({
+        where: { id: req.user!.id },
+        data: {
+            name: name.trim(),
+            phone: phone?.trim() || "",
+        },
+        include: { addresses: true },
+    });
+
+    res.json({ user: sanitizeUser(user) });
+};
+
+// Change Password
+// PUT /api/auth/change-password
+export const changePassword = async (req: Request, res: Response) => {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "Current password and new password are required" });
+    }
+
+    if (newPassword.length < 8) {
+        return res.status(400).json({ message: "New password must be at least 8 characters long" });
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: req.user!.id } });
+
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+        return res.status(401).json({ message: "Current password is incorrect" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+        where: { id: user.id },
+        data: { password: hashedPassword },
+    });
+
+    res.json({ message: "Password changed successfully" });
+};
