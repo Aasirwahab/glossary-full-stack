@@ -24,9 +24,9 @@ const Addresses = () => {
     };
 
     const getLocation = (retries = 3): Promise<{ lat: number; lng: number }> => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             if (!navigator.geolocation) {
-                reject(new Error("Geolocation not supported"));
+                resolve({ lat: 0, lng: 0 });
                 return;
             }
 
@@ -38,12 +38,16 @@ const Addresses = () => {
                             lng: position.coords.longitude,
                         });
                     },
-                    (error: any) => {
+                    (error: GeolocationPositionError) => {
+                        if (error.code === error.PERMISSION_DENIED) {
+                            resolve({ lat: 0, lng: 0 });
+                            return;
+                        }
                         if (retries > 0) {
                             retries--;
                             setTimeout(attempt, 1000);
                         } else {
-                            reject(new Error(error.message || "Failed to get location after retries"));
+                            resolve({ lat: 0, lng: 0 });
                         }
                     },
                     {
