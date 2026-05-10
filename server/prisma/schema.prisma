@@ -21,6 +21,8 @@ model User {
     resetTokenExpiry  DateTime?
     addresses         Address[]
     orders            Order[]
+    reviews           Review[]
+    wishlist          Wishlist[]
     createdAt         DateTime  @default(now())
     updatedAt         DateTime  @updatedAt
 }
@@ -54,6 +56,8 @@ model Product {
     isOrganic     Boolean? @default(false)
     rating        Float?   @default(0)
     reviewCount   Int?     @default(0)
+    reviews       Review[]
+    wishlist      Wishlist[]
     createdAt     DateTime @default(now())
     updatedAt     DateTime @updatedAt
 }
@@ -71,6 +75,9 @@ model Order {
     total           Float
     status          String @default("Placed")
     statusHistory   Json
+
+    deliveryDate      String?
+    deliverySlot      String?
 
     deliveryPartnerId String?
     deliveryPartner   DeliveryPartner? @relation(fields: [deliveryPartnerId], references: [id], onDelete: SetNull)
@@ -94,4 +101,38 @@ model DeliveryPartner {
     orders      Order[]
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
+}
+
+model Review {
+    id        String   @id @default(uuid())
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    productId String
+    product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+    rating    Int
+    comment   String?  @default("")
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([userId, productId])
+}
+
+model Wishlist {
+    id        String   @id @default(uuid())
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    productId String
+    product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+    createdAt DateTime @default(now())
+
+    @@unique([userId, productId])
+}
+
+model DeliveryZone {
+    id       String  @id @default(uuid())
+    name     String
+    lat      Float
+    lng      Float
+    radiusKm Float   @default(10)
+    isActive Boolean @default(true)
 }

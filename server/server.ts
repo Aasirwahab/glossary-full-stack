@@ -11,6 +11,8 @@ import { inngest, functions } from "./inngest/index.js";
 import addressRouter from "./routes/addressRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
 import deliveryPartnerRouter from "./routes/deliveryPartnerRoutes.js";
+import wishlistRouter from "./routes/wishlistRoutes.js";
+import deliveryZoneRouter from "./routes/deliveryZoneRoutes.js";
 import { stripeWebhook } from "./controllers/webhooks.js";
 import { prisma } from "./config/prisma.js";
 
@@ -46,6 +48,8 @@ app.use("/api/inngest", serve({ client: inngest, functions }));
 app.use("/api/addresses", addressRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/delivery", deliveryPartnerRouter);
+app.use("/api/wishlist", wishlistRouter);
+app.use("/api/delivery-zones", deliveryZoneRouter);
 
 // Error handling
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {

@@ -6,7 +6,7 @@ import Stripe from "stripe";
 // Create order
 // POST /api/orders
 export const createOrder = async (req: Request, res: Response) => {
-    const { items, shippingAddress, paymentMethod } = req.body;
+    const { items, shippingAddress, paymentMethod, deliveryDate, deliverySlot } = req.body;
 
     // Check if order items are empty
     if (!items || items.length === 0) {
@@ -56,6 +56,8 @@ export const createOrder = async (req: Request, res: Response) => {
             deliveryFee,
             tax,
             total,
+            deliveryDate: deliveryDate || null,
+            deliverySlot: deliverySlot || null,
             statusHistory: [{ status: "Placed", note: "Order placed successfully", timestamp: new Date() }],
         },
     });

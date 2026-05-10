@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import type { Order } from "../types";
 import { Link, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useCart } from "../context/CartContext";
 import { statusColors } from "../assets/assets";
 import Loading from "../components/Loading";
-import { CalendarIcon, ChevronRightIcon, PackageIcon } from "lucide-react";
+import { CalendarIcon, ChevronRightIcon, PackageIcon, RefreshCwIcon } from "lucide-react";
 import api from "../config/api";
 import toast from "react-hot-toast";
 
 const MyOrders = () => {
+    const { t } = useTranslation();
     const currency = import.meta.env.VITE_CURRENCY_SYMBOL || "$";
 
     const [orders, setOrders] = useState<Order[]>([]);
@@ -18,7 +20,38 @@ const MyOrders = () => {
 
     const tabs = ["all", "Placed", "Out for Delivery", "Delivered"];
 
-    const { clearCart } = useCart();
+    const { clearCart, addToCart } = useCart();
+    const [reordering, setReordering] = useState<string | null>(null);
+
+    const handleReorder = async (e: React.MouseEvent, order: Order) => {
+        e.preventDefault(); // prevent Link navigation
+        e.stopPropagation();
+        setReordering(order.id);
+        try {
+            const productIds = order.items.map((item) => item.product);
+            const { data } = await api.post("/products/batch", { ids: productIds });
+            const productsMap = new Map(data.products.map((p: any) => [p.id, p]));
+
+            let addedCount = 0;
+            for (const item of order.items) {
+                const product = productsMap.get(item.product);
+                if (product && product.stock > 0) {
+                    addToCart(product, item.quantity);
+                    addedCount++;
+                }
+            }
+
+            if (addedCount > 0) {
+                toast.success(`${addedCount} item${addedCount > 1 ? "s" : ""} added to cart`);
+            } else {
+                toast.error("None of these items are currently in stock");
+            }
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message || error?.message);
+        } finally {
+            setReordering(null);
+        }
+    };
 
     const fetchOrders = async () => {
         setLoading(true);
@@ -48,7 +81,7 @@ const MyOrders = () => {
     return (
         <div className="min-h-screen bg-app-cream mb-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <h1 className="text-2xl font-semibold text-app-green mb-6">My Orders</h1>
+                <h1 className="text-2xl font-semibold text-app-green mb-6">{t("orders.title")}</h1>
 
                 {/* Tabs */}
                 <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
@@ -65,10 +98,10 @@ const MyOrders = () => {
                 ) : orders.length === 0 ? (
                     <div className="text-center py-16">
                         <PackageIcon className="size-16 text-app-border mx-auto mb-4" />
-                        <h2 className="text-lg font-medium text-app-green mb-2">No orders yet</h2>
-                        <p className="text-sm text-app-text-light mb-4">Start shopping to see your orders here</p>
+                        <h2 className="text-lg font-medium text-app-green mb-2">{t("orders.noOrders")}</h2>
+                        <p className="text-sm text-app-text-light mb-4">{t("orders.startShopping")}</p>
                         <Link to="/products" className="inline-flex px-4 py-2 bg-app-green text-white text-sm rounded-lg">
-                            Start Shopping
+                            {t("home.shopNow")}
                         </Link>
                     </div>
                 ) : (
@@ -105,10 +138,22 @@ const MyOrders = () => {
                                 <div className="flex justify-between items-center pt-3 text-sm">
                                     <span className="text-app-text-light">{order.items.length} items</span>
 
-                                    <span className="font-semibold text-app-green">
-                                        {currency}
-                                        {order.total.toFixed(2)}
-                                    </span>
+                                    <div className="flex items-center gap-3">
+                                        {order.status === "Delivered" && (
+                                            <button
+                                                onClick={(e) => handleReorder(e, order)}
+                                                disabled={reordering === order.id}
+                                                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-app-orange border border-app-orange rounded-lg hover:bg-orange-50 transition-colors disabled:opacity-50"
+                                            >
+                                                <RefreshCwIcon className={`size-3 ${reordering === order.id ? "animate-spin" : ""}`} />
+                                                {t("orders.buyAgain")}
+                                            </button>
+                                        )}
+                                        <span className="font-semibold text-app-green">
+                                            {currency}
+                                            {order.total.toFixed(2)}
+                                        </span>
+                                    </div>
                                 </div>
                             </Link>
                         ))}

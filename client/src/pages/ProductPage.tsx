@@ -3,9 +3,10 @@ import { useCart } from "../context/CartContext";
 import { useEffect, useState } from "react";
 import type { Product } from "../types";
 import Loading from "../components/Loading";
-import { ArrowLeftIcon, ArrowRightIcon, HomeIcon, LeafIcon, MinusIcon, PlusIcon, ShoppingCartIcon, StarIcon } from "lucide-react";
-import DummyReviewsSection from "../assets/DummyReviewsSection";
+import { ArrowLeftIcon, ArrowRightIcon, HeartIcon, HomeIcon, LeafIcon, MinusIcon, PlusIcon, ShoppingCartIcon, StarIcon } from "lucide-react";
+import ReviewSection from "../components/ReviewSection";
 import ProductCard from "../components/ProductCard";
+import { useWishlist } from "../context/WishlistContext";
 import api from "../config/api";
 
 const ProductPage = () => {
@@ -13,6 +14,7 @@ const ProductPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { items, addToCart, updateQuantity, removeFromCart } = useCart();
+    const { wishlistIds, toggle } = useWishlist();
 
     const [product, setProduct] = useState<Product | null>(null);
     const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
@@ -106,7 +108,15 @@ const ProductPage = () => {
                         <div className="p-6 md:p-10 flex flex-col justify-center">
                             <span className="text-xs font-medium text-app-text-light tracking-wider mb-2 capitalize">{categoryLabel}</span>
 
-                            <h1 className="text-2xl md:text-3xl font-semibold text-app-green mb-3">{product.name}</h1>
+                            <div className="flex items-start justify-between gap-3 mb-3">
+                                <h1 className="text-2xl md:text-3xl font-semibold text-app-green">{product.name}</h1>
+                                <button
+                                    onClick={() => toggle(product.id)}
+                                    className="shrink-0 size-10 rounded-full border border-app-border flex-center hover:bg-red-50 transition-colors"
+                                >
+                                    <HeartIcon className={`size-5 transition-colors ${wishlistIds.has(product.id) ? "text-red-500 fill-red-500" : "text-zinc-400"}`} />
+                                </button>
+                            </div>
 
                             {/* Rating */}
                             {product.rating > 0 && (
@@ -176,7 +186,7 @@ const ProductPage = () => {
                 </div>
 
                 {/* Customer Reviews */}
-                {product.reviewCount > 0 && <DummyReviewsSection product={product} />}
+                <ReviewSection product={product} />
 
                 {/* Related Products */}
                 {relatedProducts.length > 0 && (

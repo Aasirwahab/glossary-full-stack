@@ -60,6 +60,25 @@ export const getProduct = async (req: Request, res: Response) => {
     res.json({ product: { ...product, discount } });
 };
 
+// POST /api/products/batch — get multiple products by IDs (for reorder)
+export const getProductsByIds = async (req: Request, res: Response) => {
+    const { ids } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({ message: "Product IDs array is required" });
+    }
+
+    const products = await prisma.product.findMany({
+        where: { id: { in: ids.slice(0, 50) } },
+    });
+
+    const productsWithDiscount = products.map((p: any) => {
+        const discount = p.originalPrice && p.price ? Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100) : 0;
+        return { ...p, discount };
+    });
+
+    res.json({ products: productsWithDiscount });
+};
+
 // POST /api/products
 export const createProduct = async (req: Request, res: Response) => {
     const product = await prisma.product.create({ data: req.body });

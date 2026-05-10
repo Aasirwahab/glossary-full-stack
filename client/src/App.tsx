@@ -12,6 +12,7 @@ import MyOrders from "./pages/MyOrders";
 import OrderTracking from "./pages/OrderTracking";
 import Addresses from "./pages/Addresses";
 import Profile from "./pages/Profile";
+import Wishlist from "./pages/Wishlist";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -20,6 +21,8 @@ import AdminProductForm from "./pages/admin/AdminProductForm";
 import AdminOrders from "./pages/admin/AdminOrders";
 import AdminDeliveryPartners from "./pages/admin/AdminDeliveryPartners";
 import AdminUsers from "./pages/admin/AdminUsers";
+import AdminDeliveryZones from "./pages/admin/AdminDeliveryZones";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import DeliveryLogin from "./pages/delivery/DeliveryLogin";
 import DeliveryLayout from "./pages/delivery/DeliveryLayout";
 import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
@@ -51,6 +54,7 @@ const App = () => {
                         <Route path="orders/:id" element={<OrderTracking />} />
                         <Route path="addresses" element={<Addresses />} />
                         <Route path="profile" element={<Profile />} />
+                        <Route path="wishlist" element={<Wishlist />} />
                     </Route>
                 </Route>
                 {/* Admin pages */}
@@ -62,6 +66,8 @@ const App = () => {
                     <Route path="orders" element={<AdminOrders />} />
                     <Route path="delivery-partners" element={<AdminDeliveryPartners />} />
                     <Route path="users" element={<AdminUsers />} />
+                    <Route path="delivery-zones" element={<AdminDeliveryZones />} />
+                    <Route path="analytics" element={<AdminAnalytics />} />
                 </Route>
 
                 {/* Delivery Partner pages */}

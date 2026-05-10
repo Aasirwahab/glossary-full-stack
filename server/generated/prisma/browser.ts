@@ -42,3 +42,18 @@ export type Order = Prisma.OrderModel
  * 
  */
 export type DeliveryPartner = Prisma.DeliveryPartnerModel
+/**
+ * Model Review
+ * 
+ */
+export type Review = Prisma.ReviewModel
+/**
+ * Model Wishlist
+ * 
+ */
+export type Wishlist = Prisma.WishlistModel
+/**
+ * Model DeliveryZone
+ * 
+ */
+export type DeliveryZone = Prisma.DeliveryZoneModel

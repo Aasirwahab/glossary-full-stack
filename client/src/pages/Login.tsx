@@ -2,10 +2,12 @@ import { useState } from "react";
 import { heroSectionData } from "../assets/assets";
 import { Link } from "react-router-dom";
 import { BikeIcon, Loader2Icon, LockIcon, MailIcon, UserIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
 
 const Login = () => {
+    const { t } = useTranslation();
     const [isLoginState, setIsLoginState] = useState(true);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -50,12 +52,12 @@ const Login = () => {
                             <BikeIcon className="size-8 text-app-green" />
                             <span className="text-2xl font-semibold text-app-green">Instacart</span>
                         </Link>
-                        <h1 className="text-2xl font-semibold text-app-green mb-2">{isLoginState ? "Sign in to your account" : "Sign up for an account"}</h1>
+                        <h1 className="text-2xl font-semibold text-app-green mb-2">{isLoginState ? t("auth.signInTitle") : t("auth.signUpTitle")}</h1>
 
                         <p className="text-sm text-app-text-light">
-                            {isLoginState ? "Don't have an account?" : "Already have an account?"}
+                            {isLoginState ? t("auth.dontHaveAccount") : t("auth.alreadyHaveAccount")}
                             <button onClick={() => setIsLoginState(!isLoginState)} className="text-orange-500 ml-1 font-semibold hover:text-orange-600 transition-colors">
-                                {isLoginState ? "Create one" : "Sign in"}
+                                {isLoginState ? t("auth.createOne") : t("nav.signIn")}
                             </button>
                         </p>
                     </div>
@@ -64,7 +66,7 @@ const Login = () => {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         {!isLoginState && (
                             <label className="text-sm flex flex-col gap-1">
-                                Name
+                                {t("auth.name")}
                                 <div className="relative">
                                     <UserIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-app-text-light" />
                                     <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" className="w-full pl-11 pr-4 py-3 text-sm bg-white rounded-xl border not-focus:border-app-border transition-all" />
@@ -72,27 +74,27 @@ const Login = () => {
                             </label>
                         )}
                         <label className="text-sm flex flex-col gap-1">
-                            Email Address
+                            {t("auth.email")}
                             <div className="relative">
                                 <MailIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-app-text-light" />
                                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@example.com" className="w-full pl-11 pr-4 py-3 text-sm bg-white rounded-xl border not-focus:border-app-border transition-all" />
                             </div>
                         </label>
                         <label className="text-sm flex flex-col gap-1">
-                            Password
+                            {t("auth.password")}
                             <div className="relative">
                                 <LockIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-app-text-light" />
                                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="••••••••" className="w-full pl-11 pr-4 py-3 text-sm bg-white rounded-xl border not-focus:border-app-border transition-all" />
                             </div>
                         </label>
                         <button type="submit" disabled={loading} className="flex-center w-full py-3 bg-green-950 text-white font-semibold rounded-xl hover:bg-green-900 transition-colors disabled:opacity-50">
-                            {loading ? <Loader2Icon className="animate-spin" /> : isLoginState ? "Sign In" : "Sign Up"}
+                            {loading ? <Loader2Icon className="animate-spin" /> : isLoginState ? t("nav.signIn") : t("auth.createOne")}
                         </button>
 
                         {isLoginState && (
                             <p className="text-center text-sm mt-2">
                                 <Link to="/forgot-password" className="text-orange-500 font-semibold hover:text-orange-600 transition-colors">
-                                    Forgot your password?
+                                    {t("auth.forgotPassword")}
                                 </Link>
                             </p>
                         )}
@@ -100,9 +102,9 @@ const Login = () => {
 
                     {/* Delivery Partner Link */}
                     <div className="mt-6 pt-6 border-t border-app-border text-center">
-                        <p className="text-xs text-app-text-light mb-2">Are you a delivery partner?</p>
+                        <p className="text-xs text-app-text-light mb-2">{t("auth.deliveryPartner")}</p>
                         <Link to="/delivery/login" className="inline-flex items-center gap-1.5 text-sm font-semibold text-app-green hover:text-app-green-light transition-colors">
-                            <BikeIcon className="size-4" /> Go to Delivery Partner Login
+                            <BikeIcon className="size-4" /> {t("auth.goToDeliveryLogin")}
                         </Link>
                     </div>
                 </div>

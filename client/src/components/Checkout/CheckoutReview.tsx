@@ -1,5 +1,25 @@
-import { CheckIcon, TruckIcon } from "lucide-react";
+import { CalendarIcon, CheckIcon, ClockIcon, TruckIcon } from "lucide-react";
 import type { Address } from "../../types";
+
+const DELIVERY_SLOTS = [
+    { value: "9AM - 12PM", label: "Morning (9AM - 12PM)" },
+    { value: "12PM - 3PM", label: "Afternoon (12PM - 3PM)" },
+    { value: "3PM - 6PM", label: "Evening (3PM - 6PM)" },
+    { value: "6PM - 9PM", label: "Night (6PM - 9PM)" },
+];
+
+function getNextDays(count: number): { value: string; label: string }[] {
+    const days: { value: string; label: string }[] = [];
+    const today = new Date();
+    for (let i = 0; i < count; i++) {
+        const d = new Date(today);
+        d.setDate(today.getDate() + i);
+        const value = d.toISOString().split("T")[0];
+        const label = i === 0 ? "Today" : i === 1 ? "Tomorrow" : d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+        days.push({ value, label });
+    }
+    return days;
+}
 
 interface CheckoutReviewProps {
     address: Address;
@@ -7,10 +27,15 @@ interface CheckoutReviewProps {
     handlePlaceOrder: () => void;
     loading: boolean;
     total: number;
+    deliveryDate: string;
+    setDeliveryDate: (date: string) => void;
+    deliverySlot: string;
+    setDeliverySlot: (slot: string) => void;
 }
 
-export default function CheckoutReview({ address, items, handlePlaceOrder, loading, total }: CheckoutReviewProps) {
+export default function CheckoutReview({ address, items, handlePlaceOrder, loading, total, deliveryDate, setDeliveryDate, deliverySlot, setDeliverySlot }: CheckoutReviewProps) {
     const currency = import.meta.env.VITE_CURRENCY_SYMBOL || "$";
+    const deliveryDays = getNextDays(5);
 
     return (
         <div className="bg-white rounded-2xl p-6 animate-fade-in">
@@ -27,6 +52,53 @@ export default function CheckoutReview({ address, items, handlePlaceOrder, loadi
                 <p className="text-sm text-app-text-light">
                     {address.label} — {address.address}, {address.city}, {address.state} {address.zip}
                 </p>
+            </div>
+
+            {/* Delivery Schedule */}
+            <div className="mb-5 p-4 bg-app-cream rounded-xl">
+                <div className="flex items-center gap-2 mb-3">
+                    <CalendarIcon className="size-4 text-app-green" />
+                    <span className="text-sm font-semibold text-app-green">Delivery Schedule</span>
+                    <span className="text-xs text-app-text-light">(optional)</span>
+                </div>
+
+                {/* Date Selection */}
+                <div className="flex gap-2 overflow-x-auto pb-2 mb-3">
+                    {deliveryDays.map((day) => (
+                        <button
+                            key={day.value}
+                            type="button"
+                            onClick={() => setDeliveryDate(deliveryDate === day.value ? "" : day.value)}
+                            className={`px-3 py-2 text-xs font-medium rounded-lg whitespace-nowrap transition-colors ${deliveryDate === day.value ? "bg-app-green text-white" : "bg-white text-app-text-light hover:bg-green-50"}`}
+                        >
+                            {day.label}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Time Slot Selection */}
+                {deliveryDate && (
+                    <div>
+                        <div className="flex items-center gap-1.5 mb-2">
+                            <ClockIcon className="size-3.5 text-app-text-light" />
+                            <span className="text-xs text-app-text-light">Select a time slot</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                            {DELIVERY_SLOTS.map((slot) => (
+                                <button
+                                    key={slot.value}
+                                    type="button"
+                                    onClick={() => setDeliverySlot(deliverySlot === slot.value ? "" : slot.value)}
+                                    className={`px-3 py-2 text-xs font-medium rounded-lg transition-colors ${deliverySlot === slot.value ? "bg-app-green text-white" : "bg-white text-app-text-light hover:bg-green-50"}`}
+                                >
+                                    {slot.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {!deliveryDate && <p className="text-xs text-app-text-light">Leave empty for standard delivery</p>}
             </div>
 
             {/* Items */}

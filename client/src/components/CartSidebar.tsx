@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useCart } from "../context/CartContext";
 import { ArrowRightIcon, MinusIcon, PlusIcon, ShoppingBagIcon, Trash2Icon, XIcon } from "lucide-react";
 
 const CartSidebar = () => {
+    const { t } = useTranslation();
     const currency = import.meta.env.VITE_CURRENCY_SYMBOL || "$";
 
     const { items, updateQuantity, removeFromCart, cartTotal, isCartOpen, setIsCartOpen } = useCart();
@@ -25,10 +27,10 @@ const CartSidebar = () => {
                 <div className="flex items-center justify-between p-5 border-b border-app-border">
                     <div className="flex items-center gap-2">
                         <ShoppingBagIcon className="size-5" />
-                        <h2 className="text-lg font-medium">Your Cart</h2>
-                        <span className="px-2 py-0.5 text-xs font-semibold bg-app-cream rounded-full">{items.length} items</span>
+                        <h2 className="text-lg font-medium">{t("cart.title")}</h2>
+                        <span className="px-2 py-0.5 text-xs font-semibold bg-app-cream rounded-full">{items.length} {t("cart.items")}</span>
                     </div>
-                    <button onClick={() => setIsCartOpen(false)} className="p-2 rounded-xl hover:bg-app-cream transition-colors">
+                    <button onClick={() => setIsCartOpen(false)} aria-label="Close cart" className="p-2 rounded-xl hover:bg-app-cream transition-colors">
                         <XIcon className="size-5" />
                     </button>
                 </div>
@@ -38,7 +40,7 @@ const CartSidebar = () => {
                     {items.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full text-center">
                             <ShoppingBagIcon className="size-16 text-app-border mb-4" />
-                            <h3 className="text-lg font-medium mb-1">Your cart is empty</h3>
+                            <h3 className="text-lg font-medium mb-1">{t("cart.empty")}</h3>
                         </div>
                     ) : (
                         items.map((item) => (
@@ -52,13 +54,13 @@ const CartSidebar = () => {
                                     </p>
                                     <div className="flex items-center justify-between mt-2">
                                         <div className="flex items-center gap-1.5">
-                                            <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="size-7 rounded-lg bg-white border border-app-border flex-center">
+                                            <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} aria-label="Decrease quantity" className="size-7 rounded-lg bg-white border border-app-border flex-center">
                                                 <MinusIcon className="size-3" />
                                             </button>
 
                                             <span className="text-sm font-semibold w-6 text-center">{item.quantity}</span>
 
-                                            <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="size-7 rounded-lg bg-white border border-app-border flex-center">
+                                            <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} aria-label="Increase quantity" className="size-7 rounded-lg bg-white border border-app-border flex-center">
                                                 <PlusIcon className="size-3" />
                                             </button>
                                         </div>
@@ -67,7 +69,7 @@ const CartSidebar = () => {
                                                 {currency}
                                                 {(item.product.price * item.quantity).toFixed(2)}
                                             </span>
-                                            <button onClick={() => removeFromCart(item.product.id)} className="p-1 text-app-text-light hover:text-app-error transition-colors">
+                                            <button onClick={() => removeFromCart(item.product.id)} aria-label="Remove item" className="p-1 text-app-text-light hover:text-app-error transition-colors">
                                                 <Trash2Icon className="size-4" />
                                             </button>
                                         </div>
@@ -81,7 +83,7 @@ const CartSidebar = () => {
                 {items.length > 0 && (
                     <div className="p-5 border-t border-app-border space-y-3">
                         <div className="flex justify-between text-sm">
-                            <span className="text-app-text-light">Subtotal</span>
+                            <span className="text-app-text-light">{t("cart.subtotal")}</span>
                             <span className="font-medium">
                                 {currency}
                                 {cartTotal.toFixed(2)}
@@ -89,14 +91,14 @@ const CartSidebar = () => {
                         </div>
 
                         <div className="flex justify-between text-sm">
-                            <span className="text-app-text-light">Delivery</span>
-                            <span className="font-medium">{deliveryFee === 0 ? <span className="text-app-success">Free</span> : `${currency}${deliveryFee.toFixed(2)}`}</span>
+                            <span className="text-app-text-light">{t("checkout.delivery")}</span>
+                            <span className="font-medium">{deliveryFee === 0 ? <span className="text-app-success">{t("checkout.free")}</span> : `${currency}${deliveryFee.toFixed(2)}`}</span>
                         </div>
 
                         {deliveryFee > 0 && <p className="text-xs text-app-text-light text-center">Free delivery on orders over {currency}20!</p>}
 
                         <div className="flex justify-between text-base font-semibold border-t border-app-border pt-3">
-                            <span>Total</span>
+                            <span>{t("checkout.total")}</span>
                             <span>
                                 {currency}
                                 {grandTotal.toFixed(2)}
@@ -111,7 +113,7 @@ const CartSidebar = () => {
                             }}
                             className="w-full py-3 bg-app-orange text-white font-semibold rounded-xl hover:bg-app-orange-dark transition-colors flex-center gap-2 active:scale-[0.98]"
                         >
-                            Proceed to Checkout <ArrowRightIcon className="size-4" />
+                            {t("cart.checkout")} <ArrowRightIcon className="size-4" />
                         </button>
                     </div>
                 )}

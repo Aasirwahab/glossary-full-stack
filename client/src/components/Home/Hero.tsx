@@ -1,8 +1,10 @@
 import { ArrowRightIcon, LeafIcon } from "lucide-react";
 import { heroSectionData } from "../../assets/assets";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Hero = () => {
+    const { t } = useTranslation();
     return (
         <section className="relative overflow-hidden min-h-[540px] mb-10 rounded-3xl flex items-center">
             <img src={heroSectionData.hero_image} alt="Hero" className="absolute inset-0 h-full w-full object-cover" />
@@ -23,11 +25,11 @@ const Hero = () => {
 
                     <div className="flex flex-wrap gap-3">
                         <Link to="/products" className="px-7 py-3 bg-orange-400 text-white font-semibold rounded-full hover:bg-orange-500 transition-all flex-center gap-2 active:scale-[0.98]">
-                            Shop Now <ArrowRightIcon className="size-4" />
+                            {t("home.shopNow")} <ArrowRightIcon className="size-4" />
                         </Link>
 
                         <Link to="/products" className="px-7 py-3 bg-white/10 text-white font-semibold rounded-full hover:bg-white/20 transition-all border border-white/20">
-                            Browse Categories
+                            {t("home.categories")}
                         </Link>
                     </div>
                 </div>

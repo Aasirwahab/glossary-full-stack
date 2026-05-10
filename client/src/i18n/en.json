@@ -1,0 +1,132 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "deals": "Deals",
+    "search": "Search for groceries...",
+    "signIn": "Sign In",
+    "profile": "Profile",
+    "wishlist": "Wishlist",
+    "myOrders": "My Orders",
+    "addresses": "Addresses",
+    "adminPanel": "Admin Panel",
+    "logout": "Logout"
+  },
+  "home": {
+    "hero_title": "Fresh groceries delivered to your door",
+    "hero_subtitle": "Shop from a wide range of fresh produce, dairy, snacks & more",
+    "shopNow": "Shop Now",
+    "categories": "Shop by Category",
+    "bestSellers": "Best Sellers",
+    "viewAll": "View All"
+  },
+  "product": {
+    "addToCart": "Add to Cart",
+    "addedToCart": "Added to Cart",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "reviews": "reviews",
+    "relatedProducts": "Related Products",
+    "writeReview": "Write a Review",
+    "noReviews": "No reviews yet. Be the first to review this product!",
+    "submitReview": "Submit Review",
+    "rating": "Rating",
+    "comment": "Comment (optional)"
+  },
+  "cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty",
+    "startShopping": "Start shopping to add items",
+    "subtotal": "Subtotal",
+    "checkout": "Checkout",
+    "items": "items"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "address": "Address",
+    "payment": "Payment",
+    "review": "Review",
+    "deliveryAddress": "Delivery Address",
+    "savedAddresses": "Saved Addresses",
+    "continueToPayment": "Continue to Payment",
+    "checkingArea": "Checking delivery area...",
+    "placeOrder": "Place Order",
+    "placingOrder": "Placing Order...",
+    "orderSummary": "Order Summary",
+    "subtotal": "Subtotal",
+    "delivery": "Delivery",
+    "free": "Free",
+    "tax": "Tax",
+    "total": "Total",
+    "deliverySchedule": "Delivery Schedule",
+    "optional": "optional",
+    "selectTimeSlot": "Select a time slot",
+    "standardDelivery": "Leave empty for standard delivery",
+    "today": "Today",
+    "tomorrow": "Tomorrow"
+  },
+  "orders": {
+    "title": "My Orders",
+    "allOrders": "All Orders",
+    "placed": "Placed",
+    "outForDelivery": "Out for Delivery",
+    "delivered": "Delivered",
+    "noOrders": "No orders yet",
+    "startShopping": "Start shopping to see your orders here",
+    "buyAgain": "Buy Again"
+  },
+  "auth": {
+    "signInTitle": "Sign in to your account",
+    "signUpTitle": "Sign up for an account",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "createOne": "Create one",
+    "email": "Email Address",
+    "password": "Password",
+    "name": "Name",
+    "forgotPassword": "Forgot your password?",
+    "deliveryPartner": "Are you a delivery partner?",
+    "goToDeliveryLogin": "Go to Delivery Partner Login"
+  },
+  "profile": {
+    "title": "My Profile",
+    "saveChanges": "Save Changes",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "emailCantChange": "Email cannot be changed",
+    "phone": "Phone"
+  },
+  "wishlist": {
+    "title": "My Wishlist",
+    "empty": "Your wishlist is empty",
+    "saveForLater": "Save items you love for later",
+    "browseProducts": "Browse Products",
+    "addedToWishlist": "Added to wishlist",
+    "loginToSave": "Please login to save items"
+  },
+  "common": {
+    "back": "Back",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "error": "Something went wrong"
+  },
+  "banner": {
+    "freeDelivery": "Free delivery on orders above $20",
+    "freshProduce": "Farm-fresh produce delivered daily"
+  },
+  "footer": {
+    "tagline": "Fresh groceries and organic produce, delivered to your doorstep.",
+    "quickLinks": "Quick Links",
+    "support": "Support",
+    "contactUs": "Contact Us",
+    "faq": "FAQ",
+    "shippingPolicy": "Shipping Policy",
+    "returns": "Returns",
+    "followUs": "Follow Us",
+    "rights": "All rights reserved."
+  }
+}

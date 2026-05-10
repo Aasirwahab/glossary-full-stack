@@ -4,7 +4,13 @@
       "PowerShell(node -v)",
       "Bash(Get-ChildItem -Path \"D:\\\\Work new\\\\104719_Grocerydeliveryfullstackinstacart\\\\grocery-delivery-fullstack\" -Force)",
       "Bash(Select-Object Name, PSIsContainer)",
-      "Bash(del \"D:\\\\Work new\\\\104719_Grocerydeliveryfullstackinstacart\\\\grocery-delivery-fullstack\\\\server\\\\set-admin.ts\")"
+      "Bash(del \"D:\\\\Work new\\\\104719_Grocerydeliveryfullstackinstacart\\\\grocery-delivery-fullstack\\\\server\\\\set-admin.ts\")",
+      "Bash(npx prisma *)",
+      "Bash(npx tsc *)",
+      "Bash(npm install *)",
+      "Bash(node -e ' *)",
+      "Bash(npm list *)",
+      "Bash(npx vite *)"
     ]
   }
 }

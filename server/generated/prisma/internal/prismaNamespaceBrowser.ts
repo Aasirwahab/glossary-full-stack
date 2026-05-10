@@ -55,7 +55,10 @@ export const ModelName = {
   Address: 'Address',
   Product: 'Product',
   Order: 'Order',
-  DeliveryPartner: 'DeliveryPartner'
+  DeliveryPartner: 'DeliveryPartner',
+  Review: 'Review',
+  Wishlist: 'Wishlist',
+  DeliveryZone: 'DeliveryZone'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -143,6 +146,8 @@ export const OrderScalarFieldEnum = {
   total: 'total',
   status: 'status',
   statusHistory: 'statusHistory',
+  deliveryDate: 'deliveryDate',
+  deliverySlot: 'deliverySlot',
   deliveryPartnerId: 'deliveryPartnerId',
   deliveryOtp: 'deliveryOtp',
   liveLocation: 'liveLocation',
@@ -168,6 +173,41 @@ export const DeliveryPartnerScalarFieldEnum = {
 } as const
 
 export type DeliveryPartnerScalarFieldEnum = (typeof DeliveryPartnerScalarFieldEnum)[keyof typeof DeliveryPartnerScalarFieldEnum]
+
+
+export const ReviewScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  productId: 'productId',
+  rating: 'rating',
+  comment: 'comment',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
+
+
+export const WishlistScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  productId: 'productId',
+  createdAt: 'createdAt'
+} as const
+
+export type WishlistScalarFieldEnum = (typeof WishlistScalarFieldEnum)[keyof typeof WishlistScalarFieldEnum]
+
+
+export const DeliveryZoneScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  lat: 'lat',
+  lng: 'lng',
+  radiusKm: 'radiusKm',
+  isActive: 'isActive'
+} as const
+
+export type DeliveryZoneScalarFieldEnum = (typeof DeliveryZoneScalarFieldEnum)[keyof typeof DeliveryZoneScalarFieldEnum]
 
 
 export const SortOrder = {

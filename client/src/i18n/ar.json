@@ -1,0 +1,132 @@
+{
+  "nav": {
+    "home": "الرئيسية",
+    "products": "المنتجات",
+    "deals": "العروض",
+    "search": "ابحث عن البقالة...",
+    "signIn": "تسجيل الدخول",
+    "profile": "الملف الشخصي",
+    "wishlist": "قائمة الأمنيات",
+    "myOrders": "طلباتي",
+    "addresses": "العناوين",
+    "adminPanel": "لوحة الإدارة",
+    "logout": "تسجيل الخروج"
+  },
+  "home": {
+    "hero_title": "بقالة طازجة توصل إلى باب منزلك",
+    "hero_subtitle": "تسوق من مجموعة واسعة من المنتجات الطازجة والألبان والوجبات الخفيفة والمزيد",
+    "shopNow": "تسوق الآن",
+    "categories": "تسوق حسب الفئة",
+    "bestSellers": "الأكثر مبيعاً",
+    "viewAll": "عرض الكل"
+  },
+  "product": {
+    "addToCart": "أضف إلى السلة",
+    "addedToCart": "تمت الإضافة إلى السلة",
+    "inStock": "متوفر",
+    "outOfStock": "غير متوفر",
+    "reviews": "التقييمات",
+    "relatedProducts": "منتجات ذات صلة",
+    "writeReview": "اكتب تقييماً",
+    "noReviews": "لا توجد تقييمات بعد. كن أول من يقيّم هذا المنتج!",
+    "submitReview": "إرسال التقييم",
+    "rating": "التقييم",
+    "comment": "تعليق (اختياري)"
+  },
+  "cart": {
+    "title": "سلة التسوق",
+    "empty": "سلة التسوق فارغة",
+    "startShopping": "ابدأ التسوق لإضافة المنتجات",
+    "subtotal": "المجموع الفرعي",
+    "checkout": "الدفع",
+    "items": "منتجات"
+  },
+  "checkout": {
+    "title": "الدفع",
+    "address": "العنوان",
+    "payment": "الدفع",
+    "review": "المراجعة",
+    "deliveryAddress": "عنوان التوصيل",
+    "savedAddresses": "العناوين المحفوظة",
+    "continueToPayment": "المتابعة إلى الدفع",
+    "checkingArea": "جاري التحقق من منطقة التوصيل...",
+    "placeOrder": "تأكيد الطلب",
+    "placingOrder": "جاري تأكيد الطلب...",
+    "orderSummary": "ملخص الطلب",
+    "subtotal": "المجموع الفرعي",
+    "delivery": "التوصيل",
+    "free": "مجاني",
+    "tax": "الضريبة",
+    "total": "الإجمالي",
+    "deliverySchedule": "جدول التوصيل",
+    "optional": "اختياري",
+    "selectTimeSlot": "اختر وقت التوصيل",
+    "standardDelivery": "اتركه فارغاً للتوصيل العادي",
+    "today": "اليوم",
+    "tomorrow": "غداً"
+  },
+  "orders": {
+    "title": "طلباتي",
+    "allOrders": "جميع الطلبات",
+    "placed": "تم الطلب",
+    "outForDelivery": "في الطريق",
+    "delivered": "تم التوصيل",
+    "noOrders": "لا توجد طلبات بعد",
+    "startShopping": "ابدأ التسوق لرؤية طلباتك هنا",
+    "buyAgain": "اشترِ مرة أخرى"
+  },
+  "auth": {
+    "signInTitle": "تسجيل الدخول إلى حسابك",
+    "signUpTitle": "إنشاء حساب جديد",
+    "dontHaveAccount": "ليس لديك حساب؟",
+    "alreadyHaveAccount": "لديك حساب بالفعل؟",
+    "createOne": "أنشئ حساباً",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "name": "الاسم",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "deliveryPartner": "هل أنت شريك توصيل؟",
+    "goToDeliveryLogin": "انتقل إلى تسجيل دخول شريك التوصيل"
+  },
+  "profile": {
+    "title": "ملفي الشخصي",
+    "saveChanges": "حفظ التغييرات",
+    "changePassword": "تغيير كلمة المرور",
+    "currentPassword": "كلمة المرور الحالية",
+    "newPassword": "كلمة المرور الجديدة",
+    "confirmPassword": "تأكيد كلمة المرور الجديدة",
+    "emailCantChange": "لا يمكن تغيير البريد الإلكتروني",
+    "phone": "الهاتف"
+  },
+  "wishlist": {
+    "title": "قائمة أمنياتي",
+    "empty": "قائمة أمنياتك فارغة",
+    "saveForLater": "احفظ المنتجات التي تحبها لوقت لاحق",
+    "browseProducts": "تصفح المنتجات",
+    "addedToWishlist": "تمت الإضافة إلى قائمة الأمنيات",
+    "loginToSave": "سجل الدخول لحفظ المنتجات"
+  },
+  "common": {
+    "back": "رجوع",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "delete": "حذف",
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ ما"
+  },
+  "banner": {
+    "freeDelivery": "توصيل مجاني للطلبات فوق $20",
+    "freshProduce": "منتجات طازجة من المزرعة يومياً"
+  },
+  "footer": {
+    "tagline": "بقالة طازجة ومنتجات عضوية، توصل إلى باب منزلك.",
+    "quickLinks": "روابط سريعة",
+    "support": "الدعم",
+    "contactUs": "اتصل بنا",
+    "faq": "الأسئلة الشائعة",
+    "shippingPolicy": "سياسة الشحن",
+    "returns": "الإرجاع",
+    "followUs": "تابعنا",
+    "rights": "جميع الحقوق محفوظة."
+  }
+}

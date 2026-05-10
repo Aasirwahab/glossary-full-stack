@@ -1,14 +1,23 @@
-import { ArrowUpRightIcon, BikeIcon, ChevronDownIcon, LogOutIcon, MapPinIcon, MenuIcon, PackageIcon, SearchIcon, SettingsIcon, ShieldIcon, ShoppingCartIcon, UserIcon, XIcon } from "lucide-react";
+import { ArrowUpRightIcon, BikeIcon, ChevronDownIcon, GlobeIcon, HeartIcon, LogOutIcon, MapPinIcon, MenuIcon, PackageIcon, SearchIcon, SettingsIcon, ShieldIcon, ShoppingCartIcon, UserIcon, XIcon } from "lucide-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+
+const LANGUAGES = [
+    { code: "en", label: "English" },
+    { code: "ta", label: "தமிழ்" },
+    { code: "ar", label: "العربية" },
+];
 
 const Navbar = () => {
     const { user, logout } = useAuth();
     const { cartCount, setIsCartOpen } = useCart();
+    const { t, i18n } = useTranslation();
     const [searchQuery, setSearchQuery] = useState("");
     const [userMenuOpen, setUserMenuOpen] = useState(false);
+    const [langMenuOpen, setLangMenuOpen] = useState(false);
     const navigate = useNavigate();
 
     const handleSearch = (e: React.SubmitEvent) => {
@@ -36,22 +45,49 @@ const Navbar = () => {
                 <div className="w-full flex items-center justify-end gap-4 lg:gap-10">
                     {/* Nav Links - Desktop */}
                     <div className="hidden md:flex items-center gap-6 text-sm text-zinc-600">
-                        <Link to="/">Home</Link>
-                        <Link to="/products">Products</Link>
+                        <Link to="/">{t("nav.home")}</Link>
+                        <Link to="/products">{t("nav.products")}</Link>
                         <Link to="/deals" className="text-app-orange">
-                            Deals
+                            {t("nav.deals")}
                         </Link>
                     </div>
                     {/* Search */}
                     <form onSubmit={handleSearch} className="hidden sm:flex flex-1 max-w-sm text-xs sm:text-sm">
                         <div className="relative w-full">
                             <SearchIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-zinc-500" />
-                            <input type="text" placeholder="Search for groceries..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-8 p-2 bg-orange-50 rounded-full ring ring-app-orange/15 focus:ring-app-orange/30" />
+                            <input type="text" placeholder={t("nav.search")} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-8 p-2 bg-orange-50 rounded-full ring ring-app-orange/15 focus:ring-app-orange/30" />
                         </div>
                     </form>
 
                     {/* Right Actions */}
                     <div className="flex items-center gap-3">
+                        {/* Language Switcher */}
+                        <div className="relative">
+                            <button onClick={() => setLangMenuOpen(!langMenuOpen)} className="p-2 rounded-xl hover:bg-zinc-100 transition-colors" title="Language">
+                                <GlobeIcon className="size-5 text-zinc-600" />
+                            </button>
+                            {langMenuOpen && (
+                                <>
+                                    <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
+                                    <div className="absolute right-0 mt-2 w-36 bg-white rounded-xl shadow-lg border border-app-border py-1 z-50 animate-fade-in">
+                                        {LANGUAGES.map((lang) => (
+                                            <button
+                                                key={lang.code}
+                                                onClick={() => {
+                                                    i18n.changeLanguage(lang.code);
+                                                    document.documentElement.dir = lang.code === "ar" ? "rtl" : "ltr";
+                                                    document.documentElement.lang = lang.code;
+                                                    setLangMenuOpen(false);
+                                                }}
+                                                className={`w-full text-left px-4 py-2 text-sm hover:bg-zinc-50 transition-colors ${i18n.language === lang.code ? "font-medium text-app-orange" : "text-zinc-700"}`}
+                                            >
+                                                {lang.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+                        </div>
                         {/* Cart */}
                         <button className="relative p-2 rounded-xl" onClick={() => setIsCartOpen(true)}>
                             <ShoppingCartIcon className="size-5 text-zinc-900" />
@@ -67,7 +103,7 @@ const Navbar = () => {
                             ) : (
                                 <div className="flex-center gap-2">
                                     <Link to="/login" className="hidden md:flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-green-950 rounded-full hover:bg-green-950-light transition-colors">
-                                        <UserIcon size={16} /> Sign In
+                                        <UserIcon size={16} /> {t("nav.signIn")}
                                     </Link>
                                     {userMenuOpen ? <XIcon className="md:hidden" onClick={() => setUserMenuOpen(!userMenuOpen)} /> : <MenuIcon className="md:hidden" onClick={() => setUserMenuOpen(!userMenuOpen)} />}
                                 </div>
@@ -86,44 +122,50 @@ const Navbar = () => {
                                         <div onClick={() => setUserMenuOpen(false)}>
                                             {!user && (
                                                 <Link to="/login" className="dropdown-link">
-                                                    <UserIcon size={16} /> Sign In{" "}
+                                                    <UserIcon size={16} /> {t("nav.signIn")}{" "}
                                                 </Link>
                                             )}
 
                                             {user && (
                                                 <Link to="/profile" className="dropdown-link">
-                                                    <SettingsIcon size={16} /> Profile{" "}
+                                                    <SettingsIcon size={16} /> {t("nav.profile")}{" "}
+                                                </Link>
+                                            )}
+
+                                            {user && (
+                                                <Link to="/wishlist" className="dropdown-link">
+                                                    <HeartIcon size={16} /> {t("nav.wishlist")}{" "}
                                                 </Link>
                                             )}
 
                                             {user && (
                                                 <Link to="/orders" className="dropdown-link">
-                                                    <PackageIcon size={16} /> My Orders{" "}
+                                                    <PackageIcon size={16} /> {t("nav.myOrders")}{" "}
                                                 </Link>
                                             )}
 
                                             {user && (
                                                 <Link to="/addresses" className="dropdown-link">
-                                                    <MapPinIcon size={16} /> Addresses{" "}
+                                                    <MapPinIcon size={16} /> {t("nav.addresses")}{" "}
                                                 </Link>
                                             )}
 
                                             <Link to="/products" className="dropdown-link md:hidden">
-                                                <ArrowUpRightIcon size={16} /> Products{" "}
+                                                <ArrowUpRightIcon size={16} /> {t("nav.products")}{" "}
                                             </Link>
 
                                             <Link to="/deals" className="dropdown-link md:hidden">
-                                                <ArrowUpRightIcon size={16} /> Deals{" "}
+                                                <ArrowUpRightIcon size={16} /> {t("nav.deals")}{" "}
                                             </Link>
                                             {user?.isAdmin && (
                                                 <Link to="/admin/products" className="dropdown-link">
-                                                    <ShieldIcon className="text-app-orange-dark" size={16} /> <span className="text-app-orange-dark">Admin Panel</span>{" "}
+                                                    <ShieldIcon className="text-app-orange-dark" size={16} /> <span className="text-app-orange-dark">{t("nav.adminPanel")}</span>{" "}
                                                 </Link>
                                             )}
                                             {user && (
                                                 <div className="border-t border-app-border pt-1">
                                                     <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-2.5 text-sm text-app-error hover:bg-red-50 w-full transition-colors">
-                                                        <LogOutIcon size={16} /> Logout
+                                                        <LogOutIcon size={16} /> {t("nav.logout")}
                                                     </button>
                                                 </div>
                                             )}

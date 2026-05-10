@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import type { Product } from "../types";
-import { Plus, Star } from "lucide-react";
+import { HeartIcon, Plus, Star } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 
 interface Props {
     product: Product;
@@ -11,7 +12,9 @@ const ProductCard = ({ product }: Props) => {
     const currency = import.meta.env.VITE_CURRENCY_SYMBOL || "$";
 
     const { addToCart } = useCart();
+    const { wishlistIds, toggle } = useWishlist();
     const navigate = useNavigate();
+    const isWishlisted = wishlistIds.has(product.id);
 
     return (
         <div className="bg-white rounded-2xl overflow-hidden shadow hover:shadow-md transition-all duration-300 group animate-fade-in cursor-pointer" onClick={() => navigate(`/products/${product.id}`)}>
@@ -21,6 +24,17 @@ const ProductCard = ({ product }: Props) => {
 
                 {/* Badges */}
                 <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">{product.discount > 0 && <span className="px-2 py-0.5 text-[10px] font-semibold uppercase bg-app-orange text-white rounded-full">{product.discount}% OFF</span>}</div>
+
+                {/* Wishlist Heart */}
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        toggle(product.id);
+                    }}
+                    className="absolute top-3 right-3 size-8 rounded-full bg-white/80 backdrop-blur-sm flex-center hover:bg-white transition-colors"
+                >
+                    <HeartIcon className={`size-4 transition-colors ${isWishlisted ? "text-red-500 fill-red-500" : "text-zinc-400"}`} />
+                </button>
             </div>
 
             {/* Info */}

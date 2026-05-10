@@ -1,8 +1,10 @@
 import { BikeIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { footerData } from "../assets/assets";
 
 const Footer = () => {
+    const { t } = useTranslation();
     return (
         <footer className="bg-app-green text-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -50,7 +52,7 @@ const Footer = () => {
 
                     {/* Contact */}
                     <div>
-                        <h3 className="text-sm font-semibold uppercase mb-4">Contact Us</h3>
+                        <h3 className="text-sm font-semibold uppercase mb-4">{t("footer.contactUs")}</h3>
                         <ul className="space-y-3">
                             {footerData.contact.map((item, i) => {
                                 const Icon = item.icon;

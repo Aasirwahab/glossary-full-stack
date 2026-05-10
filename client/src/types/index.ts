@@ -72,6 +72,14 @@ export interface DeliveryPartner {
     createdAt: string;
 }
 
+export interface Review {
+    id: string;
+    rating: number;
+    comment: string;
+    user: { id: string; name: string; avatar: string };
+    createdAt: string;
+}
+
 export interface Order {
     id: string;
     user: string | { id: string; name: string; email: string; phone?: string };
@@ -84,6 +92,8 @@ export interface Order {
     total: number;
     status: string;
     statusHistory: { status: string; timestamp: string; note: string }[];
+    deliveryDate: string | null;
+    deliverySlot: string | null;
     deliveryPartner: DeliveryPartner | null;
     deliveryOtp: string;
     isPaid: boolean;

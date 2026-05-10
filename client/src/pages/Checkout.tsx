@@ -33,6 +33,8 @@ const Checkout = () => {
     });
 
     const [paymentMethod, setPaymentMethod] = useState("card");
+    const [deliveryDate, setDeliveryDate] = useState("");
+    const [deliverySlot, setDeliverySlot] = useState("");
 
     const deliveryFee = cartTotal > 20 ? 0 : 1.99;
     const tax = cartTotal * 0.08;
@@ -54,6 +56,8 @@ const Checkout = () => {
                 })),
                 shippingAddress: address,
                 paymentMethod,
+                deliveryDate: deliveryDate || undefined,
+                deliverySlot: deliverySlot || undefined,
             };
 
             const { data } = await api.post("/orders", orderData);
@@ -135,7 +139,7 @@ const Checkout = () => {
 
                         {step === "payment" && <CheckoutPayment paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} setStep={setStep} />}
 
-                        {step === "review" && <CheckoutReview address={address} items={items} handlePlaceOrder={handlePlaceOrder} loading={loading} total={total} />}
+                        {step === "review" && <CheckoutReview address={address} items={items} handlePlaceOrder={handlePlaceOrder} loading={loading} total={total} deliveryDate={deliveryDate} setDeliveryDate={setDeliveryDate} deliverySlot={deliverySlot} setDeliverySlot={setDeliverySlot} />}
                     </div>
 
                     {/* Order Summary Sidebar */}

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Order } from "../types";
 import Loading from "../components/Loading";
-import { ArrowLeftIcon, MapPinIcon, PhoneIcon } from "lucide-react";
+import { ArrowLeftIcon, CalendarIcon, ClockIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 import OrderOTP from "../components/OrderTracking/OrderOTP";
 import LiveMap from "../components/OrderTracking/LiveMap";
 import OrderTimeLine from "../components/OrderTracking/OrderTimeLine";
@@ -111,6 +111,24 @@ const OrderTracking = () => {
                                 {order?.shippingAddress.city}, {order?.shippingAddress.state} {order?.shippingAddress.zip}
                             </p>
                         </div>
+
+                        {/* Scheduled Delivery */}
+                        {order?.deliveryDate && (
+                            <div className="bg-white rounded-2xl p-5">
+                                <h3 className="text-sm font-semibold text-app-green mb-3 flex items-center gap-2">
+                                    <CalendarIcon className="size-4" />
+                                    Scheduled Delivery
+                                </h3>
+                                <div className="flex items-center gap-4 text-sm text-app-text-light">
+                                    <span>{new Date(order.deliveryDate + "T00:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</span>
+                                    {order.deliverySlot && (
+                                        <span className="flex items-center gap-1">
+                                            <ClockIcon className="size-3.5" /> {order.deliverySlot}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Items */}
                         <div className="bg-white rounded-2xl p-5">
