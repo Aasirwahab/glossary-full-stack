@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import crypto from "crypto";
 import { prisma } from "../config/prisma.js";
 import bcrypt from "bcrypt";
+import sendEmail from "../config/nodemailer.js";
 
 // Analytics dashboard data
 export const getAnalytics = async (req: Request, res: Response) => {
@@ -231,6 +232,121 @@ export const getUsers = async (req: Request, res: Response) => {
         orderBy: { createdAt: "desc" },
     });
     res.json({ users });
+};
+
+// Invite admin by email
+export const inviteAdmin = async (req: Request, res: Response) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: "Please provide a valid email address" });
+    }
+
+    // Check if user already exists as admin
+    const existingUser = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+    if (existingUser?.role === "admin") {
+        return res.status(400).json({ message: "This user is already an admin" });
+    }
+
+    // Check for pending invite
+    const pendingInvite = await prisma.adminInvite.findFirst({
+        where: { email: email.toLowerCase(), expiresAt: { gt: new Date() }, usedAt: null },
+    });
+    if (pendingInvite) {
+        return res.status(400).json({ message: "An invite is already pending for this email" });
+    }
+
+    const token = crypto.randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+    await prisma.adminInvite.create({
+        data: { email: email.toLowerCase(), token, invitedBy: req.user!.id, expiresAt },
+    });
+
+    const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+    const inviteLink = existingUser
+        ? `${clientUrl}/login?admin_invite=${token}`
+        : `${clientUrl}/login?tab=register&admin_invite=${token}`;
+
+    try {
+        await sendEmail({
+            to: email.toLowerCase(),
+            subject: "You're invited as an Admin - Instacart",
+            body: `<div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 520px; margin: auto; border: 1px solid #e5e7eb; border-radius: 16px; overflow: hidden;">
+                <div style="background: linear-gradient(135deg, #16a34a, #22c55e); padding: 24px 28px;">
+                    <h2 style="color: #fff; margin: 0; font-size: 20px;">Admin Invitation</h2>
+                </div>
+                <div style="padding: 28px;">
+                    <p style="font-size: 15px; color: #374151;">You've been invited to join <strong>Instacart</strong> as an admin.</p>
+                    <p style="font-size: 14px; color: #6b7280;">${existingUser ? "Click below to accept your admin role." : "Click below to create your account with admin privileges."}</p>
+                    <div style="text-align: center; margin: 24px 0;">
+                        <a href="${inviteLink}"
+                           style="display: inline-block; background: #16a34a; color: #fff; padding: 12px 32px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                           Accept Invitation
+                        </a>
+                    </div>
+                    <p style="font-size: 13px; color: #9ca3af;">This invitation expires in 7 days.</p>
+                </div>
+            </div>`,
+        });
+    } catch (err: any) {
+        console.log("Admin invite email failed:", err.message);
+        return res.status(500).json({ message: "Failed to send invite email" });
+    }
+
+    res.json({ message: `Invitation sent to ${email}` });
+};
+
+// Accept admin invite (for existing users)
+export const acceptAdminInvite = async (req: Request, res: Response) => {
+    const { token } = req.body;
+
+    if (!token) {
+        return res.status(400).json({ message: "Invite token is required" });
+    }
+
+    const invite = await prisma.adminInvite.findUnique({ where: { token } });
+
+    if (!invite || invite.usedAt || invite.expiresAt < new Date()) {
+        return res.status(400).json({ message: "Invalid or expired invitation" });
+    }
+
+    // If the user exists, promote them
+    const user = await prisma.user.findUnique({ where: { email: invite.email } });
+    if (!user) {
+        return res.status(400).json({ message: "Please register first using the invite link" });
+    }
+
+    await prisma.$transaction([
+        prisma.user.update({ where: { id: user.id }, data: { role: "admin" } }),
+        prisma.adminInvite.update({ where: { id: invite.id }, data: { usedAt: new Date() } }),
+    ]);
+
+    res.json({ message: "You are now an admin!", user: { id: user.id, name: user.name, email: user.email, role: "admin" } });
+};
+
+// Get pending invites
+export const getAdminInvites = async (req: Request, res: Response) => {
+    const invites = await prisma.adminInvite.findMany({
+        where: { expiresAt: { gt: new Date() }, usedAt: null },
+        orderBy: { createdAt: "desc" },
+    });
+    res.json({ invites });
+};
+
+// Cancel invite
+export const cancelAdminInvite = async (req: Request, res: Response) => {
+    try {
+        await prisma.adminInvite.delete({ where: { id: req.params.id } });
+        res.json({ message: "Invite cancelled" });
+    } catch {
+        res.status(404).json({ message: "Invite not found" });
+    }
 };
 
 // Update user role (admin)

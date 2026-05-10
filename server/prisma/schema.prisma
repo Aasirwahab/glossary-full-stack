@@ -145,3 +145,16 @@ model DeliveryZone {
     radiusKm Float   @default(10)
     isActive Boolean @default(true)
 }
+
+model AdminInvite {
+    id        String    @id @default(uuid())
+    email     String
+    token     String    @unique
+    invitedBy String
+    expiresAt DateTime
+    usedAt    DateTime?
+    createdAt DateTime  @default(now())
+
+    @@index([email])
+    @@index([token])
+}

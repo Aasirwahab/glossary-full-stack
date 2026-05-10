@@ -58,7 +58,8 @@ export const ModelName = {
   DeliveryPartner: 'DeliveryPartner',
   Review: 'Review',
   Wishlist: 'Wishlist',
-  DeliveryZone: 'DeliveryZone'
+  DeliveryZone: 'DeliveryZone',
+  AdminInvite: 'AdminInvite'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -208,6 +209,19 @@ export const DeliveryZoneScalarFieldEnum = {
 } as const
 
 export type DeliveryZoneScalarFieldEnum = (typeof DeliveryZoneScalarFieldEnum)[keyof typeof DeliveryZoneScalarFieldEnum]
+
+
+export const AdminInviteScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  token: 'token',
+  invitedBy: 'invitedBy',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AdminInviteScalarFieldEnum = (typeof AdminInviteScalarFieldEnum)[keyof typeof AdminInviteScalarFieldEnum]
 
 
 export const SortOrder = {

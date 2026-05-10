@@ -81,3 +81,8 @@ export type Wishlist = Prisma.WishlistModel
  * 
  */
 export type DeliveryZone = Prisma.DeliveryZoneModel
+/**
+ * Model AdminInvite
+ * 
+ */
+export type AdminInvite = Prisma.AdminInviteModel

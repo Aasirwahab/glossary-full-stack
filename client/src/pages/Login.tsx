@@ -1,20 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { heroSectionData } from "../assets/assets";
-import { Link } from "react-router-dom";
-import { BikeIcon, Loader2Icon, LockIcon, MailIcon, UserIcon } from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
+import { BikeIcon, Loader2Icon, LockIcon, MailIcon, ShieldIcon, UserIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
+import api from "../config/api";
 
 const Login = () => {
     const { t } = useTranslation();
-    const [isLoginState, setIsLoginState] = useState(true);
+    const [searchParams] = useSearchParams();
+    const adminInviteToken = searchParams.get("admin_invite");
+    const tabParam = searchParams.get("tab");
+
+    const [isLoginState, setIsLoginState] = useState(tabParam !== "register");
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const { login, register } = useAuth();
+    const { login, register, user, token } = useAuth();
+
+    // If logged-in user arrives with an invite token, auto-accept it
+    useEffect(() => {
+        if (adminInviteToken && user && token) {
+            api.post("/admin/invites/accept", { token: adminInviteToken })
+                .then(({ data }) => {
+                    toast.success(data.message);
+                    window.location.href = "/admin";
+                })
+                .catch((err) => {
+                    toast.error(err?.response?.data?.message || "Failed to accept invite");
+                });
+        }
+    }, [adminInviteToken, user, token]);
 
     const handleSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
@@ -22,8 +41,19 @@ const Login = () => {
         try {
             if (isLoginState) {
                 await login(email, password);
+                // After login, if there's an invite token, accept it
+                if (adminInviteToken) {
+                    try {
+                        await api.post("/admin/invites/accept", { token: adminInviteToken });
+                        toast.success("You are now an admin!");
+                        window.location.href = "/admin";
+                        return;
+                    } catch (err: any) {
+                        toast.error(err?.response?.data?.message || "Failed to accept invite");
+                    }
+                }
             } else {
-                await register(name, email, password);
+                await register(name, email, password, adminInviteToken || undefined);
             }
         } catch (error: any) {
             toast.error(error.response?.data?.message || error?.message);
@@ -46,6 +76,16 @@ const Login = () => {
             {/* LRight Side */}
             <div className="flex-1 flex-center px-4 py-12 bg-app-cream">
                 <div className="w-full max-w-md">
+                    {/* Admin invite banner */}
+                    {adminInviteToken && (
+                        <div className="mb-6 bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
+                            <ShieldIcon className="size-5 text-green-700 shrink-0" />
+                            <p className="text-sm text-green-800">
+                                <strong>Admin Invitation</strong> — {isLoginState ? "Sign in to accept your admin role." : "Create your account to join as admin."}
+                            </p>
+                        </div>
+                    )}
+
                     {/* form header message */}
                     <div className="text-center mb-8">
                         <Link to="/" className="inline-flex items-center gap-2 mb-6">

@@ -9,7 +9,7 @@ interface AuthContextType {
     token: string | null;
     loading: boolean;
     login: (email: string, password: string) => Promise<void>;
-    register: (name: string, email: string, password: string) => Promise<void>;
+    register: (name: string, email: string, password: string, adminInviteToken?: string) => Promise<void>;
     logout: () => void;
     updateUser: (userData: Partial<User>) => void;
 }
@@ -55,9 +55,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const register = async (name: string, email: string, password: string) => {
+    const register = async (name: string, email: string, password: string, adminInviteToken?: string) => {
         try {
-            const { data } = await api.post("/auth/register", { name, email, password });
+            const { data } = await api.post("/auth/register", { name, email, password, adminInviteToken });
             setUser(data.user);
             setToken(data.token);
             localStorage.setItem("auth_token", data.token);

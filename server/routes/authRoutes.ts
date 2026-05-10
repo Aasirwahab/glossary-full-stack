@@ -11,14 +11,22 @@ const authLimiter = rateLimit({
     legacyHeaders: false,
 });
 
+const refreshLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 30,
+    message: { message: "Too many refresh attempts, please try again later" },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
 const authRouter = express.Router();
 
 authRouter.post("/register", authLimiter, register);
 authRouter.post("/login", authLimiter, login);
-authRouter.post("/verify-email", verifyEmail);
+authRouter.post("/verify-email", authLimiter, verifyEmail);
 authRouter.post("/forgot-password", authLimiter, forgotPassword);
 authRouter.post("/reset-password", authLimiter, resetPassword);
-authRouter.post("/refresh", refreshAccessToken);
+authRouter.post("/refresh", refreshLimiter, refreshAccessToken);
 authRouter.put("/profile", auth, updateProfile);
 authRouter.put("/change-password", auth, changePassword);
 

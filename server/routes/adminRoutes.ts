@@ -1,7 +1,7 @@
 import express from "express";
 import auth from "../middleware/auth.js";
 import admin from "../middleware/admin.js";
-import { assignDeliveryPartner, createDeliveryPartner, getAdminStats, getAnalytics, getDeliveryPartners, getUsers, updateDeliveryPartner, updateUserRole } from "../controllers/adminController.js";
+import { acceptAdminInvite, assignDeliveryPartner, cancelAdminInvite, createDeliveryPartner, getAdminInvites, getAdminStats, getAnalytics, getDeliveryPartners, getUsers, inviteAdmin, updateDeliveryPartner, updateUserRole } from "../controllers/adminController.js";
 
 const adminRouter = express.Router();
 
@@ -13,5 +13,9 @@ adminRouter.put("/delivery-partners/:id", auth, admin, updateDeliveryPartner);
 adminRouter.put("/orders/:id/assign", auth, admin, assignDeliveryPartner);
 adminRouter.get("/users", auth, admin, getUsers);
 adminRouter.put("/users/:id/role", auth, admin, updateUserRole);
+adminRouter.post("/invites", auth, admin, inviteAdmin);
+adminRouter.get("/invites", auth, admin, getAdminInvites);
+adminRouter.delete("/invites/:id", auth, admin, cancelAdminInvite);
+adminRouter.post("/invites/accept", auth, acceptAdminInvite);
 
 export default adminRouter;

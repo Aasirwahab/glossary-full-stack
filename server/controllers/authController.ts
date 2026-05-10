@@ -6,11 +6,12 @@ import jwt from "jsonwebtoken";
 import sendEmail from "../config/nodemailer.js";
 
 const generateAccessToken = (id: string, role: string) => {
-    return jwt.sign({ id, role }, process.env.JWT_SECRET as string, { expiresIn: "7d" });
+    return jwt.sign({ id, role }, process.env.JWT_SECRET as string, { expiresIn: "15m" });
 };
 
 const generateRefreshToken = (id: string, role: string) => {
-    return jwt.sign({ id, role, type: "refresh" }, process.env.JWT_SECRET as string, { expiresIn: "30d" });
+    const secret = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET as string;
+    return jwt.sign({ id, role, type: "refresh" }, secret, { expiresIn: "30d" });
 };
 
 const sanitizeUser = (user: any) => {
@@ -21,10 +22,15 @@ const sanitizeUser = (user: any) => {
 // Register
 // POST /api/auth/register
 export const register = async (req: Request, res: Response) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, adminInviteToken } = req.body;
 
     if (!name || !email || !password) {
         return res.status(400).json({ message: "Please provide all fields" });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: "Please provide a valid email address" });
     }
 
     if (password.length < 8) {
@@ -40,12 +46,23 @@ export const register = async (req: Request, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const verificationToken = crypto.randomBytes(32).toString("hex");
 
+    // Check for admin invite token
+    let role = "user";
+    if (adminInviteToken) {
+        const invite = await prisma.adminInvite.findUnique({ where: { token: adminInviteToken } });
+        if (invite && !invite.usedAt && invite.expiresAt > new Date() && invite.email === email.toLowerCase()) {
+            role = "admin";
+            await prisma.adminInvite.update({ where: { id: invite.id }, data: { usedAt: new Date() } });
+        }
+    }
+
     const user = await prisma.user.create({
         data: {
             name,
             email: email.toLowerCase(),
             password: hashedPassword,
             verificationToken,
+            role,
         },
     });
 
@@ -225,7 +242,8 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
     }
 
     try {
-        const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET as string) as { id: string; role: string; type: string };
+        const secret = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET as string;
+        const decoded = jwt.verify(refreshToken, secret) as { id: string; role: string; type: string };
 
         if (decoded.type !== "refresh") {
             return res.status(401).json({ message: "Invalid token type" });
