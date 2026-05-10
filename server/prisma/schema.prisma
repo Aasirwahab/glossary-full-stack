@@ -60,6 +60,11 @@ model Product {
     wishlist      Wishlist[]
     createdAt     DateTime @default(now())
     updatedAt     DateTime @updatedAt
+
+    @@index([category])
+    @@index([price])
+    @@index([stock])
+    @@index([createdAt])
 }
 
 model Order {
@@ -87,6 +92,10 @@ model Order {
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    @@index([userId])
+    @@index([status])
+    @@index([deliveryPartnerId])
 }
 
 model DeliveryPartner {
