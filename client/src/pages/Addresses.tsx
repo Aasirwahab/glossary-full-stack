@@ -104,36 +104,35 @@ const Addresses = () => {
     }, []);
 
     return (
-        <div className="min-h-screen bg-app-cream">
+        <div className="min-h-screen bg-app-cream pb-24 md:pb-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* page header  */}
                 <div className="flex items-center justify-between mb-8">
-                    <h1 className="text-2xl font-semibold text-app-green">My Addresses</h1>
+                    <h1 className="text-2xl sm:text-3xl font-semibold text-app-text">My Addresses</h1>
                     <button
                         onClick={() => {
                             resetForm();
                             setShowForm(true);
                         }}
-                        className="px-4 py-2 bg-app-green text-white text-sm font-semibold rounded-xl hover:bg-app-green-light transition-colors flex items-center gap-2"
+                        className="px-5 py-2.5 bg-app-green text-white text-sm font-semibold rounded-xl hover:bg-app-green-light transition-all flex items-center gap-2 active:scale-[0.98] shadow-sm"
                     >
                         <PlusIcon className="size-4" /> Add Address
                     </button>
                 </div>
 
-                {/* Form Modal */}
                 {showForm && <AddressForm resetForm={resetForm} handleSubmit={handleSubmit} form={form} setForm={setForm} editingId={editingId} />}
 
-                {/* Addresses List */}
                 {loading ? (
                     <Loading />
                 ) : addresses.length === 0 ? (
-                    <div className="text-center py-16">
-                        <MapPinIcon className="size-16 text-app-border mx-auto mb-4" />
-                        <h2 className="text-lg font-semibold text-app-green mb-2">No addresses saved</h2>
-                        <p className="text-sm text-app-text-light">Add an address for faster checkout</p>
+                    <div className="text-center py-20">
+                        <div className="size-20 rounded-3xl bg-zinc-50 flex-center mx-auto mb-5">
+                            <MapPinIcon className="size-9 text-zinc-300" />
+                        </div>
+                        <h2 className="text-lg font-semibold text-app-text mb-2">No addresses saved</h2>
+                        <p className="text-sm text-app-text-lighter">Add an address for faster checkout</p>
                     </div>
                 ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-4 max-w-3xl">
                         {addresses.map((addr) => (
                             <AddressCard key={addr.id} addr={addr} onEditHandler={onEditHandler} setAddresses={setAddresses} />
                         ))}

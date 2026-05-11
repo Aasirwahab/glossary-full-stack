@@ -13,9 +13,16 @@ import personal_care from "./personal_care.png";
 import baby_care from "./baby_care.png";
 import meat_seafood from "./meat_seafood.png";
 
+import hero_bg_premium from "./hero_bg_premium.png";
+import delivery_premium from "./delivery_premium.png";
+import delivery_person_premium from "./delivery_person_premium.png";
+
 export const assets = {
     delivery_truck,
     hero_bg,
+    hero_bg_premium,
+    delivery_premium,
+    delivery_person_premium,
 };
 
 export const categoriesData = [
@@ -33,7 +40,7 @@ export const categoriesData = [
 
 export const heroSectionData = {
     description: "Fresh, organic groceries delivered from local farms to your doorstep. Quality you can taste, convenience you deserve.",
-    hero_image: hero_bg,
+    hero_image: hero_bg_premium,
     hero_features: [
         { icon: TruckIcon, title: "Free Delivery", desc: "Orders over $20" },
         { icon: LeafIcon, title: "100% Organic", desc: "Certified products" },

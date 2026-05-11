@@ -19,25 +19,27 @@ const Wishlist = () => {
     }, []);
 
     return (
-        <div className="min-h-screen bg-app-cream">
+        <div className="min-h-screen bg-app-cream pb-24 md:pb-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <h1 className="text-2xl font-semibold text-app-green mb-8">{t("wishlist.title")}</h1>
+                <h1 className="text-2xl sm:text-3xl font-semibold text-app-text mb-8">{t("wishlist.title")}</h1>
 
                 {loading ? (
                     <div className="flex-center py-20">
-                        <Loader2Icon className="size-6 animate-spin text-app-text-light" />
+                        <Loader2Icon className="size-7 animate-spin text-app-green" />
                     </div>
                 ) : products.length === 0 ? (
-                    <div className="text-center py-16">
-                        <HeartIcon className="size-16 text-app-border mx-auto mb-4" />
-                        <h2 className="text-lg font-semibold text-app-green mb-2">{t("wishlist.empty")}</h2>
-                        <p className="text-sm text-app-text-light mb-6">{t("wishlist.saveForLater")}</p>
-                        <Link to="/products" className="px-6 py-3 bg-app-green text-white font-semibold rounded-xl hover:bg-app-green-light transition-colors">
+                    <div className="text-center py-20">
+                        <div className="size-20 rounded-3xl bg-zinc-50 flex-center mx-auto mb-5">
+                            <HeartIcon className="size-9 text-zinc-300" />
+                        </div>
+                        <h2 className="text-lg font-semibold text-app-text mb-2">{t("wishlist.empty")}</h2>
+                        <p className="text-sm text-app-text-lighter mb-6">{t("wishlist.saveForLater")}</p>
+                        <Link to="/products" className="px-6 py-3 bg-app-green text-white font-semibold rounded-xl hover:bg-app-green-light transition-all">
                             {t("wishlist.browseProducts")}
                         </Link>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 xl:gap-8">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 xl:gap-6">
                         {products.map((product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}

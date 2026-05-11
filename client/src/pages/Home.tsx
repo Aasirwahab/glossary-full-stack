@@ -7,13 +7,15 @@ import PopularProducts from "../components/Home/PopularProducts";
 
 const Home = () => {
     return (
-        <div className="min-h-screen max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="min-h-screen">
             <Hero />
-            <Features />
-            <HomeCategories />
-            <PopularProducts />
-            <AppPromoBanner />
-            <Newsletter />
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-12">
+                <Features />
+                <HomeCategories />
+                <PopularProducts />
+                <AppPromoBanner />
+                <Newsletter />
+            </div>
         </div>
     );
 };
