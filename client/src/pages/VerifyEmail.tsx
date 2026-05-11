@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { BikeIcon, CheckCircleIcon, Loader2Icon, XCircleIcon } from "lucide-react";
+import { CheckCircleIcon, Loader2Icon, XCircleIcon } from "lucide-react";
 import api from "../config/api";
+import { assets } from "../assets/assets";
 
 const VerifyEmail = () => {
     const [searchParams] = useSearchParams();
@@ -21,9 +22,9 @@ const VerifyEmail = () => {
     return (
         <div className="min-h-screen flex-center px-4 bg-app-cream">
             <div className="w-full max-w-md text-center">
-                <Link to="/" className="inline-flex items-center gap-2 mb-8">
-                    <BikeIcon className="size-8 text-app-green" />
-                    <span className="text-2xl font-semibold text-app-green">Instacart</span>
+                <Link to="/" className="inline-flex items-center gap-3 mb-8">
+                    <img src={assets.logo} alt="FreshMart Logo" className="h-10 w-auto object-contain" />
+                    <span className="text-2xl font-semibold text-app-green">FreshMart</span>
                 </Link>
 
                 <div className="bg-white rounded-2xl border border-app-border p-8">

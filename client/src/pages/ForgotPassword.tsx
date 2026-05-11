@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { BikeIcon, Loader2Icon, MailIcon } from "lucide-react";
+import { Loader2Icon, MailIcon } from "lucide-react";
 import api from "../config/api";
 import toast from "react-hot-toast";
+import { assets } from "../assets/assets";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
@@ -27,9 +28,9 @@ const ForgotPassword = () => {
         <div className="min-h-screen flex-center px-4 bg-app-cream">
             <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                    <Link to="/" className="inline-flex items-center gap-2 mb-6">
-                        <BikeIcon className="size-8 text-app-green" />
-                        <span className="text-2xl font-semibold text-app-green">Instacart</span>
+                    <Link to="/" className="inline-flex items-center gap-3 mb-6">
+                        <img src={assets.logo} alt="FreshMart Logo" className="h-10 w-auto object-contain" />
+                        <span className="text-2xl font-semibold text-app-green">FreshMart</span>
                     </Link>
                     <h1 className="text-2xl font-semibold text-app-green mb-2">Forgot your password?</h1>
                     <p className="text-sm text-app-text-light">Enter your email and we'll send you a reset link.</p>

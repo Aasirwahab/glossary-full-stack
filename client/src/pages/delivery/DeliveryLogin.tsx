@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { BikeIcon, ShoppingBagIcon } from "lucide-react";
-import { heroSectionData } from "../../assets/assets";
+import { ShoppingBagIcon } from "lucide-react";
+import { heroSectionData, assets } from "../../assets/assets";
 import api from "../../config/api";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
@@ -48,9 +48,9 @@ export default function DeliveryLogin() {
             <div className="flex-1 flex-center px-4 py-12 bg-app-cream">
                 <div className="w-full max-w-md">
                     <div className="text-center mb-8">
-                        <div className="flex-center gap-2 mb-4">
-                            <BikeIcon className="size-7 text-app-green" />
-                            <span className="text-2xl font-semibold text-app-green">Instacart</span>
+                        <div className="flex-center gap-3 mb-4">
+                            <img src={assets.logo} alt="FreshMart Logo" className="h-10 w-auto object-contain" />
+                            <span className="text-2xl font-semibold text-app-green">FreshMart</span>
                         </div>
                         <h1 className="text-2xl font-semibold text-app-green mb-2">Delivery Partner Login</h1>
                         <p className="text-sm text-app-text-light">Sign in to manage your deliveries</p>

@@ -13,6 +13,10 @@ import OrderTracking from "./pages/OrderTracking";
 import Addresses from "./pages/Addresses";
 import Profile from "./pages/Profile";
 import Wishlist from "./pages/Wishlist";
+import About from "./pages/About";
+import Policy from "./pages/Policy";
+import Faqs from "./pages/Faqs";
+import Support from "./pages/Support";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -48,6 +52,10 @@ const App = () => {
                     <Route path="products/:id" element={<ProductPage />} />
                     <Route path="search" element={<SearchResults />} />
                     <Route path="deals" element={<FlashDeals />} />
+                    <Route path="about" element={<About />} />
+                    <Route path="policy" element={<Policy />} />
+                    <Route path="faqs" element={<Faqs />} />
+                    <Route path="support" element={<Support />} />
                     <Route element={<ProtectedRoute />}>
                         <Route path="checkout" element={<Checkout />} />
                         <Route path="orders" element={<MyOrders />} />

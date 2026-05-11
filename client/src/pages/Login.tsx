@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { heroSectionData } from "../assets/assets";
+import { heroSectionData, assets } from "../assets/assets";
 import { Link, useSearchParams } from "react-router-dom";
 import { BikeIcon, LeafIcon, Loader2Icon, LockIcon, MailIcon, ShieldIcon, TruckIcon, UserIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -70,10 +70,8 @@ const Login = () => {
 
                 <div className="relative text-center px-16 max-w-lg">
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                        <div className="size-16 rounded-2xl bg-white/10 backdrop-blur-sm flex-center mx-auto mb-8 border border-white/10">
-                            <BikeIcon className="size-7 text-white" />
-                        </div>
-                        <h2 className="text-3xl font-serif text-white mb-4 leading-snug">Welcome back to Instacart</h2>
+                        <img src={assets.logo} alt="FreshMart Logo" className="h-16 w-auto object-contain brightness-0 invert mx-auto mb-8" />
+                        <h2 className="text-3xl font-serif text-white mb-4 leading-snug">Welcome back to FreshMart</h2>
                         <p className="text-white/50 text-base leading-relaxed mb-10">Fresh groceries and organic produce, delivered to your doorstep.</p>
 
                         <div className="flex items-center justify-center gap-6">
@@ -111,10 +109,8 @@ const Login = () => {
                     {/* Header */}
                     <div className="text-center mb-8">
                         <Link to="/" className="inline-flex items-center gap-2.5 mb-6 group">
-                            <div className="size-10 rounded-xl bg-gradient-to-br from-app-green to-app-green-lighter flex-center group-hover:scale-105 transition-transform">
-                                <BikeIcon className="size-5 text-white" />
-                            </div>
-                            <span className="text-xl font-semibold text-app-green">Instacart</span>
+                            <img src={assets.logo} alt="FreshMart Logo" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
+                            <span className="text-xl font-semibold text-app-green">FreshMart</span>
                         </Link>
                         <h1 className="text-2xl font-semibold text-app-text mb-2">{isLoginState ? t("auth.signInTitle") : t("auth.signUpTitle")}</h1>
                         <p className="text-sm text-app-text-light">

@@ -1,82 +1,112 @@
-import { BikeIcon } from "lucide-react";
+import { MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
+import { SiVisa, SiMastercard, SiStripe, SiApplepay, SiGooglepay, SiPaypal } from "@icons-pack/react-simple-icons";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { footerData } from "../assets/assets";
+import { assets } from "../assets/assets";
 
 const Footer = () => {
-    const { t } = useTranslation();
     return (
-        <footer className="bg-gradient-to-b from-[#0a1f14] to-[#071510] text-white">
-            <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 pt-16 pb-8">
-                {/* Top */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
-                    {/* Brand */}
-                    <div className="lg:col-span-1">
-                        <Link to="/" className="flex items-center gap-2.5 mb-5 group">
-                            <div className="size-9 rounded-xl bg-white/10 flex-center border border-white/10 group-hover:bg-white/15 transition-colors">
-                                <BikeIcon className="size-4.5 text-white" />
-                            </div>
-                            <span className="text-lg font-semibold">{footerData.brand.name}</span>
+        <footer className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-8">
+            <div className="bg-app-cream rounded-[32px] px-8 lg:px-14 pt-14 pb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-6">
+                    {/* Brand & Payment */}
+                    <div className="lg:col-span-3">
+                        <Link to="/" className="flex items-center gap-3 mb-6 group">
+                            <img src={assets.logo} alt="FreshMart Logo" className="h-10 w-auto object-contain" />
+                            <h2 className="text-xl font-serif font-black text-app-text tracking-tight">FreshMart</h2>
                         </Link>
-                        <p className="text-sm text-white/40 leading-relaxed mb-6 max-w-xs">{footerData.brand.description}</p>
-                        <div className="flex gap-2.5">
-                            {footerData.brand.socials.map((social, i) => (
-                                <a key={i} href={social.link} className="size-10 rounded-xl bg-white/5 flex-center hover:bg-white/10 border border-white/5 hover:border-white/15 transition-all">
-                                    <social.icon className="size-4 text-white/70" />
-                                </a>
+                        <p className="text-app-text-light text-sm leading-relaxed mb-6 max-w-[240px]">
+                            Bringing fresh, organic groceries straight from local farms to your doorstep.
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                            {[
+                                { icon: SiVisa, label: "Visa" },
+                                { icon: SiMastercard, label: "Mastercard" },
+                                { icon: SiStripe, label: "Stripe" },
+                                { icon: SiApplepay, label: "Apple Pay" },
+                                { icon: SiGooglepay, label: "Google Pay" },
+                                { icon: SiPaypal, label: "PayPal" },
+                            ].map((m) => (
+                                <div key={m.label} className="size-10 bg-white rounded-lg flex items-center justify-center border border-app-border-light" title={m.label}>
+                                    <m.icon className="size-5 text-app-text-light" />
+                                </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* Sections */}
-                    {footerData.sections.map((section, i) => (
-                        <div key={i}>
-                            <h3 className="text-xs font-semibold uppercase tracking-wider text-white/30 mb-5">{section.title}</h3>
-                            <ul className="space-y-3">
-                                {section.links.map((link, j) => (
-                                    <li key={j}>
-                                        {link.to ? (
-                                            <Link to={link.to} className="text-sm text-white/50 hover:text-white transition-colors">
-                                                {link.label}
-                                            </Link>
-                                        ) : (
-                                            <a href={link.href} className="text-sm text-white/50 hover:text-white transition-colors">
-                                                {link.label}
-                                            </a>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    ))}
+                    {/* Main Pages */}
+                    <div className="lg:col-span-2">
+                        <h3 className="text-sm font-bold text-app-text mb-5">Main Pages</h3>
+                        <ul className="space-y-3">
+                            {[
+                                { label: "Home", to: "/" },
+                                { label: "About Us", to: "/about" },
+                                { label: "Product", to: "/products" },
+                                { label: "Testimonial", to: "#" },
+                                { label: "FAQ", to: "/faqs" },
+                            ].map((link) => (
+                                <li key={link.label}>
+                                    <Link to={link.to} className="text-sm text-app-text-light hover:text-app-green transition-colors">{link.label}</Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
 
-                    {/* Contact */}
-                    <div>
-                        <h3 className="text-xs font-semibold uppercase tracking-wider text-white/30 mb-5">{t("footer.contactUs")}</h3>
-                        <ul className="space-y-3.5">
-                            {footerData.contact.map((item, i) => {
-                                const Icon = item.icon;
-                                return (
-                                    <li key={i} className="flex gap-3 text-sm text-white/50">
-                                        <div className="size-8 rounded-lg bg-white/5 flex-center shrink-0">
-                                            <Icon className="size-3.5 text-white/60" />
-                                        </div>
-                                        <span className="pt-1.5">{item.text}</span>
-                                    </li>
-                                );
-                            })}
+                    {/* Help */}
+                    <div className="lg:col-span-2">
+                        <h3 className="text-sm font-bold text-app-text mb-5">Help</h3>
+                        <ul className="space-y-3">
+                            {[
+                                { label: "Help Center", to: "/support" },
+                                { label: "Return Policy", to: "/policy" },
+                                { label: "Offer Policy", to: "/policy" },
+                                { label: "Grocery delivery", to: "#" },
+                                { label: "Reviews", to: "#" },
+                            ].map((link) => (
+                                <li key={link.label}>
+                                    <Link to={link.to} className="text-sm text-app-text-light hover:text-app-green transition-colors">{link.label}</Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Company */}
+                    <div className="lg:col-span-2">
+                        <h3 className="text-sm font-bold text-app-text mb-5">Company</h3>
+                        <ul className="space-y-3">
+                            {["Jobs", "Partnerships", "List your property", "Advertising", "Investor Relations", "Feedback"].map((link) => (
+                                <li key={link}>
+                                    <Link to="#" className="text-sm text-app-text-light hover:text-app-green transition-colors">{link}</Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Contact Information */}
+                    <div className="lg:col-span-3">
+                        <h3 className="text-sm font-bold text-app-text mb-5">Contact Information</h3>
+                        <ul className="space-y-3">
+                            <li className="flex gap-3 text-sm text-app-text-light">
+                                <MapPinIcon className="size-4 text-app-text-lighter shrink-0 mt-0.5" />
+                                <span>Aurora, Colorado - amerika serikat, US</span>
+                            </li>
+                            <li className="flex gap-3 text-sm text-app-text-light">
+                                <PhoneIcon className="size-4 text-app-text-lighter shrink-0 mt-0.5" />
+                                <span>+00 887-254-887</span>
+                            </li>
+                            <li className="flex gap-3 text-sm text-app-text-light">
+                                <MailIcon className="size-4 text-app-text-lighter shrink-0 mt-0.5" />
+                                <span>helloquery@gmail.com</span>
+                            </li>
                         </ul>
                     </div>
                 </div>
 
-                {/* Divider + Bottom */}
-                <div className="border-t border-white/5 mt-14 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <p className="text-xs text-white/25">{footerData.bottom.copyright}</p>
-                    <div className="flex gap-6">
-                        {footerData.bottom.links.map((link, i) => (
-                            <a key={i} href={link.href} className="text-xs text-white/25 hover:text-white/50 transition-colors">
-                                {link.label}
-                            </a>
+                {/* Bottom Bar */}
+                <div className="mt-12 pt-6 border-t border-app-border-light flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <p className="text-xs text-app-text-lighter font-medium">Copyright all rights reserved</p>
+                    <div className="flex gap-8">
+                        {["Privacy & policy", "Terms & Condition"].map((link) => (
+                            <Link key={link} to="#" className="text-xs text-app-text-lighter font-medium hover:text-app-green transition-colors">{link}</Link>
                         ))}
                     </div>
                 </div>

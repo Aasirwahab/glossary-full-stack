@@ -1,35 +1,48 @@
 import { Link } from "react-router-dom";
 import { categoriesData } from "../../assets/assets";
 import { ArrowRightIcon } from "lucide-react";
+import { motion } from "framer-motion";
 
 const HomeCategories = () => {
     return (
-        <section className="py-16">
-            <div className="max-w-7xl mx-auto">
-                <div className="flex items-end justify-between mb-8">
-                    <div>
-                        <h2 className="text-2xl sm:text-3xl font-semibold text-app-text">Browse Categories</h2>
-                        <p className="text-sm text-app-text-light mt-1.5">Find exactly what you need</p>
+        <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div className="flex items-center justify-between gap-4 mb-8 sm:mb-12">
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-black text-app-text tracking-tighter">Popular Categories</h2>
+                <Link to="/products" className="group flex items-center gap-2 sm:gap-3 px-4 py-2.5 sm:px-6 sm:py-3 bg-app-text text-white rounded-full text-xs sm:text-sm font-bold hover:bg-app-green transition-all shadow-lg shrink-0">
+                    Show All
+                    <div className="size-5 sm:size-6 rounded-full bg-white/20 flex items-center justify-center group-hover:translate-x-1 transition-transform">
+                        <ArrowRightIcon className="size-3" />
                     </div>
-                    <Link to="/products" className="text-sm font-semibold text-app-orange hover:text-app-orange-dark flex items-center gap-1 transition-colors">
-                        View All <ArrowRightIcon className="size-4" />
-                    </Link>
-                </div>
-                <div className="flex items-start gap-2 sm:gap-4 overflow-x-auto no-scrollbar pb-4">
-                    {categoriesData.map((cat) => (
+                </Link>
+            </div>
+
+            <div className="flex gap-6 overflow-x-auto no-scrollbar pb-8 -mx-4 px-4 sm:mx-0 sm:px-0">
+                {categoriesData.map((cat, index) => (
+                    <motion.div
+                        key={cat.slug}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        viewport={{ once: true }}
+                    >
                         <Link
-                            key={cat.slug}
                             to={`/products?category=${cat.slug}`}
-                            onClick={() => window.scrollTo(0, 0)}
-                            className="group flex flex-col items-center gap-3 p-3 sm:p-4 shrink-0"
+                            className="group flex flex-col items-center p-5 sm:p-6 bg-white rounded-[24px] sm:rounded-[32px] shadow-sm hover:shadow-premium transition-all duration-500 w-[140px] sm:w-[180px] shrink-0"
                         >
-                            <div className="size-20 sm:size-28 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-100/50 group-hover:border-orange-200 group-hover:shadow-elevated transition-all duration-300 p-2 sm:p-3">
-                                <img src={cat.image} alt={cat.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300" />
+                            <div className="size-20 sm:size-24 mb-3 sm:mb-4 flex items-center justify-center">
+                                <img
+                                    src={cat.image}
+                                    alt={cat.name}
+                                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                                />
                             </div>
-                            <span className="text-xs sm:text-sm font-medium text-zinc-600 text-center leading-tight group-hover:text-app-green transition-colors">{cat.name}</span>
+                            <div className="text-center">
+                                <h3 className="text-sm sm:text-base font-bold text-app-text group-hover:text-app-green transition-colors">{cat.name}</h3>
+                                <p className="text-[10px] sm:text-xs text-app-text-lighter mt-1 font-medium">10+ Products</p>
+                            </div>
                         </Link>
-                    ))}
-                </div>
+                    </motion.div>
+                ))}
             </div>
         </section>
     );

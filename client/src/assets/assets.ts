@@ -16,6 +16,8 @@ import meat_seafood from "./meat_seafood.png";
 import hero_bg_premium from "./hero_bg_premium.png";
 import delivery_premium from "./delivery_premium.png";
 import delivery_person_premium from "./delivery_person_premium.png";
+import promo_banner from "./promo_banner.png";
+import logo from "./logo1.png";
 
 export const assets = {
     delivery_truck,
@@ -23,6 +25,8 @@ export const assets = {
     hero_bg_premium,
     delivery_premium,
     delivery_person_premium,
+    promo_banner,
+    logo,
 };
 
 export const categoriesData = [
@@ -58,7 +62,7 @@ export const appPromoBannerData = {
 
 export const footerData = {
     brand: {
-        name: "Instacart",
+        name: "FreshMart",
         description: "Bringing fresh, organic groceries straight from local farms to your doorstep. Nourish your home with Earth's finest.",
         socials: [
             { icon: SiFacebook, link: "#" },
