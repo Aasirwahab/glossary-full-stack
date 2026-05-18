@@ -240,6 +240,21 @@ input:focus {
     animation: scaleIn 0.2s ease-out forwards;
 }
 
+@keyframes dropdownIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.animate-in {
+    animation: dropdownIn 0.15s ease-out forwards;
+}
+
 .animate-float {
     animation: float 3s ease-in-out infinite;
 }

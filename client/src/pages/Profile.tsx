@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { KeyRoundIcon, Loader2Icon, LockIcon, PhoneIcon, SaveIcon, UserIcon } from "lucide-react";
+import { KeyRoundIcon, Loader2Icon, LockIcon, LogOutIcon, PhoneIcon, SaveIcon, UserIcon } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import api from "../config/api";
 import toast from "react-hot-toast";
 
 const Profile = () => {
-    const { user, updateUser } = useAuth();
+    const { user, updateUser, logout } = useAuth();
 
     const [name, setName] = useState(user?.name || "");
     const [phone, setPhone] = useState(user?.phone || "");
@@ -70,7 +70,7 @@ const Profile = () => {
                         <div className="size-14 rounded-2xl bg-gradient-to-br from-app-green to-app-green-lighter text-white flex-center text-xl font-semibold">
                             {user?.name?.charAt(0).toUpperCase()}
                         </div>
-                        <div>
+                        <div className="flex-1">
                             <p className="font-semibold text-app-text text-lg">{user?.name}</p>
                             <p className="text-sm text-app-text-lighter">{user?.email}</p>
                             {user?.isAdmin && (
@@ -84,12 +84,12 @@ const Profile = () => {
                             <label className="block text-sm font-medium text-app-text mb-1.5">Name</label>
                             <div className="relative">
                                 <UserIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-zinc-400" />
-                                <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className="w-full pl-11 pr-4 py-3 text-sm bg-zinc-50 rounded-xl border border-app-border/50 focus:bg-white focus:border-app-green/30 focus:shadow-[0_0_0_3px_rgba(45,90,63,0.06)] transition-all" />
+                                <input type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="Your full name" className="w-full pl-11 pr-4 py-3 text-sm bg-zinc-50 rounded-xl border border-app-border/50 focus:bg-white focus:border-app-green/30 focus:shadow-[0_0_0_3px_rgba(45,90,63,0.06)] transition-all" />
                             </div>
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-app-text mb-1.5">Email</label>
-                            <input type="email" value={user?.email || ""} disabled className="w-full px-4 py-3 text-sm bg-zinc-50 rounded-xl border border-app-border/30 text-app-text-lighter cursor-not-allowed" />
+                            <input type="email" value={user?.email || ""} disabled placeholder="Your email address" className="w-full px-4 py-3 text-sm bg-zinc-50 rounded-xl border border-app-border/30 text-app-text-lighter cursor-not-allowed" />
                             <p className="text-xs text-app-text-lighter mt-1.5">Email cannot be changed</p>
                         </div>
                         <div>
@@ -107,7 +107,7 @@ const Profile = () => {
                 </div>
 
                 {/* Change Password */}
-                <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-soft border border-app-border/30">
+                <div className="bg-white rounded-2xl p-6 sm:p-8 mb-6 shadow-soft border border-app-border/30">
                     <h2 className="text-lg font-semibold text-app-text mb-6 flex items-center gap-2.5">
                         <div className="size-9 rounded-xl bg-zinc-50 flex-center">
                             <KeyRoundIcon className="size-4.5 text-zinc-500" />
@@ -129,6 +129,7 @@ const Profile = () => {
                                 <LockIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-zinc-400" />
                                 <input type="password" required value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="At least 8 characters" className="w-full pl-11 pr-4 py-3 text-sm bg-zinc-50 rounded-xl border border-app-border/50 focus:bg-white focus:border-app-green/30 focus:shadow-[0_0_0_3px_rgba(45,90,63,0.06)] transition-all" />
                             </div>
+                            <p className="text-[11px] text-app-text-lighter mt-1.5">Must include uppercase, lowercase, number & special character</p>
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-app-text mb-1.5">Confirm New Password</label>
@@ -142,6 +143,29 @@ const Profile = () => {
                             Change Password
                         </button>
                     </form>
+                </div>
+
+                {/* Sign Out Section */}
+                <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-soft border border-red-100">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="size-10 rounded-xl bg-red-50 flex-center">
+                                <LogOutIcon className="size-5 text-red-500" />
+                            </div>
+                            <div>
+                                <h3 className="text-sm font-semibold text-app-text">Sign Out</h3>
+                                <p className="text-xs text-app-text-lighter">End your current session</p>
+                            </div>
+                        </div>
+                        <button
+                            id="profile-sign-out-button"
+                            onClick={logout}
+                            className="flex items-center gap-2 px-5 py-2.5 bg-red-50 text-red-600 text-sm font-semibold rounded-xl hover:bg-red-100 transition-all active:scale-[0.98] border border-red-100"
+                        >
+                            <LogOutIcon className="size-4" />
+                            Sign Out
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

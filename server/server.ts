@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
+import helmet from "helmet";
 import morgan from "morgan";
 import authRouter from "./routes/authRoutes.js";
 import productRouter from "./routes/productRoutes.js";
@@ -15,16 +16,26 @@ import wishlistRouter from "./routes/wishlistRoutes.js";
 import deliveryZoneRouter from "./routes/deliveryZoneRoutes.js";
 import { stripeWebhook } from "./controllers/webhooks.js";
 import { prisma } from "./config/prisma.js";
+import { cleanupBlacklistedTokens, cleanupLoginAttempts } from "./controllers/authController.js";
 
 const app = express();
 
 app.post("/api/stripe", express.raw({ type: "application/json" }), stripeWebhook);
 
+// Security headers
+app.use(helmet({
+    contentSecurityPolicy: false, // Allow inline scripts for dev; configure properly for production
+    crossOriginEmbedderPolicy: false,
+}));
+
 // Middleware
 const allowedOrigins = process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",").map((o) => o.trim()) : [];
 app.use(cors({ origin: allowedOrigins, credentials: true }));
-app.use(express.json());
-app.use(morgan("dev"));
+app.use(express.json({ limit: "10mb" }));
+app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
+
+// Trust proxy for rate limiting behind reverse proxies (Vercel, etc.)
+app.set("trust proxy", 1);
 
 const port = process.env.PORT || 5000;
 
@@ -59,4 +70,10 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
+
+    // Cleanup expired blacklisted tokens and old login attempts every 6 hours
+    setInterval(() => {
+        cleanupBlacklistedTokens().catch(console.error);
+        cleanupLoginAttempts().catch(console.error);
+    }, 6 * 60 * 60 * 1000);
 });

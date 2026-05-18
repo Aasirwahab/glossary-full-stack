@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { heroSectionData, assets } from "../assets/assets";
 import { Link, useSearchParams } from "react-router-dom";
-import { BikeIcon, LeafIcon, Loader2Icon, LockIcon, MailIcon, ShieldIcon, TruckIcon, UserIcon } from "lucide-react";
+import { BikeIcon, CheckIcon, LeafIcon, Loader2Icon, LockIcon, MailIcon, ShieldIcon, TruckIcon, UserIcon, XIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
@@ -146,6 +146,44 @@ const Login = () => {
                                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="••••••••" className="w-full pl-11 pr-4 py-3 text-sm bg-white rounded-xl border border-app-border/60 focus:border-app-green/30 focus:shadow-[0_0_0_3px_rgba(45,90,63,0.06)] transition-all" />
                             </div>
                         </label>
+
+                        {/* Password Strength Indicator (Registration only) */}
+                        {!isLoginState && password.length > 0 && (
+                            <div className="space-y-2 px-1">
+                                {/* Strength Bar */}
+                                <div className="flex gap-1">
+                                    {[/[a-z]/, /[A-Z]/, /[0-9]/, /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/, /.{8,}/].map((regex, i) => (
+                                        <div
+                                            key={i}
+                                            className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                                                regex.test(password) ? "bg-app-green" : "bg-zinc-200"
+                                            }`}
+                                        />
+                                    ))}
+                                </div>
+                                {/* Requirements */}
+                                <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                                    {[
+                                        { label: "Lowercase letter", met: /[a-z]/.test(password) },
+                                        { label: "Uppercase letter", met: /[A-Z]/.test(password) },
+                                        { label: "Number", met: /[0-9]/.test(password) },
+                                        { label: "Special character", met: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password) },
+                                        { label: "8+ characters", met: password.length >= 8 },
+                                    ].map((req) => (
+                                        <div key={req.label} className="flex items-center gap-1.5">
+                                            {req.met ? (
+                                                <CheckIcon className="size-3 text-app-green shrink-0" />
+                                            ) : (
+                                                <XIcon className="size-3 text-zinc-300 shrink-0" />
+                                            )}
+                                            <span className={`text-[10px] ${req.met ? "text-app-green font-medium" : "text-zinc-400"}`}>
+                                                {req.label}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         <button type="submit" disabled={loading} className="flex-center w-full py-3.5 bg-app-green text-white font-semibold rounded-xl hover:bg-app-green-light transition-all disabled:opacity-50 active:scale-[0.98] shadow-sm mt-2">
                             {loading ? <Loader2Icon className="animate-spin" /> : isLoginState ? t("nav.signIn") : t("auth.createOne")}

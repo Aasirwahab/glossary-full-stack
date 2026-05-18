@@ -58,6 +58,10 @@ api.interceptors.response.use(
             try {
                 const { data } = await api.post("/auth/refresh", { refreshToken });
                 localStorage.setItem("auth_token", data.token);
+                // Store rotated refresh token if provided
+                if (data.refreshToken) {
+                    localStorage.setItem("auth_refresh_token", data.refreshToken);
+                }
                 processQueue(null, data.token);
                 originalRequest.headers.Authorization = `Bearer ${data.token}`;
                 return api(originalRequest);

@@ -1,8 +1,6 @@
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
 import { MapPinIcon } from "lucide-react";
-import L from "leaflet";
-import { useEffect, useMemo } from "react";
-import "leaflet/dist/leaflet.css";
+import { useMemo, useState, useEffect } from "react";
 
 // --- SVG Marker Builders ---
 
@@ -89,96 +87,125 @@ const destinationMarkerSvg = `
   <circle cx="20" cy="20" r="4" fill="#ea580c"/>
 </svg>`;
 
-// Pulsing circle around delivery partner (animated via CSS)
-const pulsingMarkerHtml = `
-<div class="delivery-pulse-wrapper">
-  <div class="delivery-pulse-ring"></div>
-  <div class="delivery-pulse-ring delivery-pulse-ring-2"></div>
-  <div class="delivery-marker-dot"></div>
-</div>`;
+const libraries: "places"[] = ["places"];
 
 export default function LiveMap({ order, liveLocation }: { order: any; liveLocation: any }) {
+    const { isLoaded } = useJsApiLoader({
+        id: 'google-map-script',
+        googleMapsApiKey: import.meta.env.VITE_MAP_API_KEY || import.meta.env.MAP_API_KEY || "",
+        libraries
+    });
+
+    const [map, setMap] = useState<google.maps.Map | null>(null);
+    const [selectedMarker, setSelectedMarker] = useState<"delivery" | "destination" | null>(null);
+
     // Determine vehicle type from the delivery partner
     const vehicleType: string = order?.deliveryPartner?.vehicleType || "bike";
     const vehicleSvg = vehicleSvgMap[vehicleType] || bikeSvg;
 
-    // Professional SVG vehicle icon (dynamic based on partner's vehicle)
-    const vehicleIcon = useMemo(() => L.divIcon({
-        html: vehicleSvg,
-        className: "delivery-marker-icon",
-        iconSize: [48, 48],
-        iconAnchor: [24, 24],
-        popupAnchor: [0, -28],
-    }), [vehicleSvg]);
+    const vehicleIcon = useMemo(() => ({
+        url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(vehicleSvg),
+        scaledSize: isLoaded ? new window.google.maps.Size(48, 48) : undefined,
+        anchor: isLoaded ? new window.google.maps.Point(24, 24) : undefined,
+    }), [vehicleSvg, isLoaded]);
 
-    // Professional SVG destination pin
-    const destinationIcon = useMemo(() => L.divIcon({
-        html: destinationMarkerSvg,
-        className: "delivery-marker-icon",
-        iconSize: [40, 52],
-        iconAnchor: [20, 52],
-        popupAnchor: [0, -52],
-    }), []);
+    const destinationIcon = useMemo(() => ({
+        url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(destinationMarkerSvg),
+        scaledSize: isLoaded ? new window.google.maps.Size(40, 52) : undefined,
+        anchor: isLoaded ? new window.google.maps.Point(20, 52) : undefined,
+    }), [isLoaded]);
 
-    // Pulsing live location indicator
-    const pulsingIcon = useMemo(() => L.divIcon({
-        html: pulsingMarkerHtml,
-        className: "delivery-pulse-icon",
-        iconSize: [80, 80],
-        iconAnchor: [40, 40],
-    }), []);
+    const onLoad = (map: google.maps.Map) => {
+        setMap(map);
+    };
 
-    // Component to re-center map when location changes
-    function MapUpdater({ center }: { center: [number, number] }) {
-        const map = useMap();
-        useEffect(() => {
-            map.setView(center, map.getZoom());
-        }, [center, map]);
-        return null;
-    }
+    const onUnmount = () => {
+        setMap(null);
+    };
 
-    // Vehicle label for popup
+    useEffect(() => {
+        if (map && liveLocation && liveLocation.lat !== 0) {
+            map.panTo({ lat: liveLocation.lat, lng: liveLocation.lng });
+        }
+    }, [liveLocation, map]);
+
     const vehicleLabel = vehicleType === "bike" ? "Bike" : vehicleType === "scooter" ? "Scooter" : vehicleType === "car" ? "Car" : "Vehicle";
+
+    if (!isLoaded) return (
+        <div className="h-full bg-slate-50 flex-center">
+            <div className="text-center">
+                <div className="size-12 bg-white rounded-full shadow-sm flex-center mx-auto mb-3 border border-app-border">
+                    <MapPinIcon className="size-6 text-app-green animate-pulse" />
+                </div>
+                <p className="text-sm text-slate-500 font-medium">Loading Google Maps...</p>
+            </div>
+        </div>
+    );
 
     return (
         <>
             {order.status !== "Delivered" && order.status !== "Cancelled" && (
-                <div className="live-map-container rounded-2xl overflow-hidden border border-app-border shadow-sm group relative">
+                <div className="live-map-container rounded-2xl overflow-hidden border border-app-border shadow-sm group relative h-full w-full">
                     {liveLocation && liveLocation.lat !== 0 ? (
-                        <MapContainer center={[liveLocation.lat, liveLocation.lng]} zoom={15} className="live-map-inner" zoomControl={false}>
-                            <TileLayer 
-                                url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" 
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-                                className="map-tiles-premium"
-                            />
-                            {/* Pulsing ring behind the vehicle */}
-                            <Marker position={[liveLocation.lat, liveLocation.lng]} icon={pulsingIcon} />
-                            {/* Delivery vehicle marker (bike/scooter/car) */}
-                            <Marker position={[liveLocation.lat, liveLocation.lng]} icon={vehicleIcon}>
-                                <Popup>
-                                    <span className="flex items-center gap-1.5">
-                                        🚚 {order?.deliveryPartner?.name || "Delivery Partner"} • {vehicleLabel}
-                                    </span>
-                                </Popup>
+                        <GoogleMap
+                            mapContainerStyle={{ width: '100%', height: '100%' }}
+                            center={{ lat: liveLocation.lat, lng: liveLocation.lng }}
+                            zoom={15}
+                            onLoad={onLoad}
+                            onUnmount={onUnmount}
+                            options={{ disableDefaultUI: true, zoomControl: true }}
+                        >
+                            <Marker
+                                position={{ lat: liveLocation.lat, lng: liveLocation.lng }}
+                                icon={vehicleIcon}
+                                onClick={() => setSelectedMarker("delivery")}
+                            >
+                                {selectedMarker === "delivery" && (
+                                    <InfoWindow onCloseClick={() => setSelectedMarker(null)}>
+                                        <div className="p-1">
+                                            <span className="flex items-center gap-1.5 font-medium text-sm">
+                                                🚚 {order?.deliveryPartner?.name || "Delivery Partner"} • {vehicleLabel}
+                                            </span>
+                                        </div>
+                                    </InfoWindow>
+                                )}
                             </Marker>
+                            
                             {order.shippingAddress.lat && order.shippingAddress.lng && (
-                                <Marker position={[order.shippingAddress.lat, order.shippingAddress.lng]} icon={destinationIcon}>
-                                    <Popup>Delivery Address</Popup>
+                                <Marker
+                                    position={{ lat: order.shippingAddress.lat, lng: order.shippingAddress.lng }}
+                                    icon={destinationIcon}
+                                    onClick={() => setSelectedMarker("destination")}
+                                >
+                                    {selectedMarker === "destination" && (
+                                        <InfoWindow onCloseClick={() => setSelectedMarker(null)}>
+                                            <div className="font-medium text-sm p-1">Delivery Address</div>
+                                        </InfoWindow>
+                                    )}
                                 </Marker>
                             )}
-                            <MapUpdater center={[liveLocation.lat, liveLocation.lng]} />
-                        </MapContainer>
+                        </GoogleMap>
                     ) : order.shippingAddress.lat && order.shippingAddress.lng ? (
-                        <MapContainer center={[order.shippingAddress.lat, order.shippingAddress.lng]} zoom={15} className="live-map-inner" zoomControl={false}>
-                            <TileLayer 
-                                url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" 
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-                                className="map-tiles-premium"
-                            />
-                            <Marker position={[order.shippingAddress.lat, order.shippingAddress.lng]} icon={destinationIcon}>
-                                <Popup>Delivery Address</Popup>
+                        <GoogleMap
+                            mapContainerStyle={{ width: '100%', height: '100%' }}
+                            center={{ lat: order.shippingAddress.lat, lng: order.shippingAddress.lng }}
+                            zoom={15}
+                            onLoad={onLoad}
+                            onUnmount={onUnmount}
+                            options={{ disableDefaultUI: true, zoomControl: true }}
+                        >
+                            <Marker
+                                position={{ lat: order.shippingAddress.lat, lng: order.shippingAddress.lng }}
+                                icon={destinationIcon}
+                                onClick={() => setSelectedMarker("destination")}
+                            >
+                                {selectedMarker === "destination" && (
+                                    <InfoWindow onCloseClick={() => setSelectedMarker(null)}>
+                                        <div className="font-medium text-sm p-1">Delivery Address</div>
+                                    </InfoWindow>
+                                )}
                             </Marker>
-                        </MapContainer>
+                        </GoogleMap>
                     ) : (
                         <div className="h-full bg-slate-50 flex-center">
                             <div className="text-center">

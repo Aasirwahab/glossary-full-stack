@@ -59,7 +59,9 @@ export const ModelName = {
   Review: 'Review',
   Wishlist: 'Wishlist',
   DeliveryZone: 'DeliveryZone',
-  AdminInvite: 'AdminInvite'
+  AdminInvite: 'AdminInvite',
+  BlacklistedToken: 'BlacklistedToken',
+  LoginAttempt: 'LoginAttempt'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -222,6 +224,27 @@ export const AdminInviteScalarFieldEnum = {
 } as const
 
 export type AdminInviteScalarFieldEnum = (typeof AdminInviteScalarFieldEnum)[keyof typeof AdminInviteScalarFieldEnum]
+
+
+export const BlacklistedTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type BlacklistedTokenScalarFieldEnum = (typeof BlacklistedTokenScalarFieldEnum)[keyof typeof BlacklistedTokenScalarFieldEnum]
+
+
+export const LoginAttemptScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  ip: 'ip',
+  success: 'success',
+  createdAt: 'createdAt'
+} as const
+
+export type LoginAttemptScalarFieldEnum = (typeof LoginAttemptScalarFieldEnum)[keyof typeof LoginAttemptScalarFieldEnum]
 
 
 export const SortOrder = {

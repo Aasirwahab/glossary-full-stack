@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from "react";
 import type { User } from "../types";
 import { useNavigate } from "react-router-dom";
 import api from "../config/api";
@@ -22,6 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
+    // Validate session on mount by calling /auth/me
     useEffect(() => {
         const savedToken = localStorage.getItem("auth_token");
         const savedUser = localStorage.getItem("auth_user");
@@ -29,6 +30,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (savedToken && savedUser) {
             setToken(savedToken);
             setUser(JSON.parse(savedUser));
+
+            // Validate token with the server
+            api.get("/auth/me")
+                .then(({ data }) => {
+                    setUser(data.user);
+                    localStorage.setItem("auth_user", JSON.stringify(data.user));
+                })
+                .catch(() => {
+                    // Token is invalid — clean up
+                    setUser(null);
+                    setToken(null);
+                    localStorage.removeItem("auth_token");
+                    localStorage.removeItem("auth_user");
+                    localStorage.removeItem("auth_refresh_token");
+                });
         }
 
         setLoading(false);
@@ -72,13 +88,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const logout = () => {
+    const logout = useCallback(async () => {
+        const refreshToken = localStorage.getItem("auth_refresh_token");
+
+        // Call server-side logout to blacklist the refresh token
+        try {
+            await api.post("/auth/logout", { refreshToken });
+        } catch {
+            // Proceed with client-side cleanup even if server call fails
+        }
+
         setUser(null);
         setToken(null);
         localStorage.removeItem("auth_token");
         localStorage.removeItem("auth_user");
         localStorage.removeItem("auth_refresh_token");
-    };
+        toast.success("Signed out successfully");
+        navigate("/login");
+    }, [navigate]);
 
     const updateUser = (userData: Partial<User>) => {
         if (user) {

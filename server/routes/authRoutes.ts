@@ -1,6 +1,6 @@
 import express from "express";
 import rateLimit from "express-rate-limit";
-import { changePassword, forgotPassword, login, refreshAccessToken, register, resetPassword, updateProfile, verifyEmail } from "../controllers/authController.js";
+import { changePassword, forgotPassword, getMe, login, logout, refreshAccessToken, register, resetPassword, updateProfile, verifyEmail } from "../controllers/authController.js";
 import auth from "../middleware/auth.js";
 
 const authLimiter = rateLimit({
@@ -23,6 +23,8 @@ const authRouter = express.Router();
 
 authRouter.post("/register", authLimiter, register);
 authRouter.post("/login", authLimiter, login);
+authRouter.post("/logout", logout);
+authRouter.get("/me", auth, getMe);
 authRouter.post("/verify-email", authLimiter, verifyEmail);
 authRouter.post("/forgot-password", authLimiter, forgotPassword);
 authRouter.post("/reset-password", authLimiter, resetPassword);

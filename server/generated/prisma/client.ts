@@ -86,3 +86,13 @@ export type DeliveryZone = Prisma.DeliveryZoneModel
  * 
  */
 export type AdminInvite = Prisma.AdminInviteModel
+/**
+ * Model BlacklistedToken
+ * 
+ */
+export type BlacklistedToken = Prisma.BlacklistedTokenModel
+/**
+ * Model LoginAttempt
+ * 
+ */
+export type LoginAttempt = Prisma.LoginAttemptModel

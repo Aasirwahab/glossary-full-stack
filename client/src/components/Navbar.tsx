@@ -1,4 +1,4 @@
-import { ChevronDownIcon, GlobeIcon, HeartIcon, HelpCircleIcon, HomeIcon, SearchIcon, ShoppingCartIcon, SparklesIcon, UserIcon } from "lucide-react";
+import { ChevronDownIcon, GlobeIcon, HeartIcon, HelpCircleIcon, HomeIcon, LogOutIcon, MapPinIcon, PackageIcon, SearchIcon, ShoppingCartIcon, SparklesIcon, UserIcon } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
@@ -8,14 +8,16 @@ import type { Product } from "../types";
 import api from "../config/api";
 
 const Navbar = () => {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const { cartCount, setIsCartOpen } = useCart();
     const [searchQuery, setSearchQuery] = useState("");
     const [scrolled, setScrolled] = useState(false);
     const [suggestions, setSuggestions] = useState<Product[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+    const [showUserMenu, setShowUserMenu] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
+    const userMenuRef = useRef<HTMLDivElement>(null);
     const debounceRef = useRef<ReturnType<typeof setTimeout>>();
     const navigate = useNavigate();
     const location = useLocation();
@@ -31,10 +33,18 @@ const Navbar = () => {
             if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
                 setShowSuggestions(false);
             }
+            if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+                setShowUserMenu(false);
+            }
         };
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+    // Close user menu on route change
+    useEffect(() => {
+        setShowUserMenu(false);
+    }, [location.pathname]);
 
     useEffect(() => {
         if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -72,6 +82,11 @@ const Navbar = () => {
         setShowSuggestions(false);
         setSearchQuery("");
         navigate(`/product/${product.id}`);
+    };
+
+    const handleSignOut = () => {
+        setShowUserMenu(false);
+        logout();
     };
 
     const isActive = (path: string) => location.pathname === path;
@@ -171,11 +186,105 @@ const Navbar = () => {
                             </button>
 
                             {user ? (
-                                <Link to="/profile" className="flex items-center gap-2 p-1 bg-app-cream rounded-full hover:shadow-soft transition-all border border-transparent hover:border-app-border">
-                                    <div className="size-9 rounded-full bg-[#071912] text-white flex-center text-xs font-black">
-                                        {user.name.charAt(0).toUpperCase()}
-                                    </div>
-                                </Link>
+                                <div ref={userMenuRef} className="relative">
+                                    <button
+                                        id="user-menu-trigger"
+                                        onClick={() => setShowUserMenu(!showUserMenu)}
+                                        className="flex items-center gap-2 p-1 bg-app-cream rounded-full hover:shadow-soft transition-all border border-transparent hover:border-app-border"
+                                    >
+                                        <div className="size-9 rounded-full bg-[#071912] text-white flex-center text-xs font-black">
+                                            {user.name.charAt(0).toUpperCase()}
+                                        </div>
+                                        <ChevronDownIcon className={`size-3 text-app-text-lighter mr-1 transition-transform duration-200 ${showUserMenu ? "rotate-180" : ""}`} />
+                                    </button>
+
+                                    {/* User Dropdown Menu */}
+                                    {showUserMenu && (
+                                        <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-premium border border-app-border-light overflow-hidden z-[60] animate-in fade-in slide-in-from-top-2 duration-200">
+                                            {/* User Info Header */}
+                                            <div className="px-4 py-3.5 bg-gradient-to-r from-[#071912] to-[#0d2b1e]">
+                                                <p className="text-sm font-bold text-white truncate">{user.name}</p>
+                                                <p className="text-[11px] text-white/50 truncate">{user.email}</p>
+                                                {user.isAdmin && (
+                                                    <span className="inline-flex mt-1.5 text-[9px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">
+                                                        Admin
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            {/* Menu Items */}
+                                            <div className="py-1.5">
+                                                <Link
+                                                    to="/profile"
+                                                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-app-text hover:bg-app-cream transition-colors group"
+                                                >
+                                                    <div className="size-8 rounded-lg bg-zinc-50 flex-center group-hover:bg-app-green/10 transition-colors">
+                                                        <UserIcon className="size-4 text-zinc-400 group-hover:text-app-green transition-colors" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-semibold text-xs">My Profile</p>
+                                                        <p className="text-[10px] text-app-text-lighter">Edit your info</p>
+                                                    </div>
+                                                </Link>
+
+                                                <Link
+                                                    to="/orders"
+                                                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-app-text hover:bg-app-cream transition-colors group"
+                                                >
+                                                    <div className="size-8 rounded-lg bg-zinc-50 flex-center group-hover:bg-blue-50 transition-colors">
+                                                        <PackageIcon className="size-4 text-zinc-400 group-hover:text-blue-500 transition-colors" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-semibold text-xs">My Orders</p>
+                                                        <p className="text-[10px] text-app-text-lighter">Track & manage</p>
+                                                    </div>
+                                                </Link>
+
+                                                <Link
+                                                    to="/addresses"
+                                                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-app-text hover:bg-app-cream transition-colors group"
+                                                >
+                                                    <div className="size-8 rounded-lg bg-zinc-50 flex-center group-hover:bg-purple-50 transition-colors">
+                                                        <MapPinIcon className="size-4 text-zinc-400 group-hover:text-purple-500 transition-colors" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-semibold text-xs">Addresses</p>
+                                                        <p className="text-[10px] text-app-text-lighter">Manage delivery</p>
+                                                    </div>
+                                                </Link>
+
+                                                {user.isAdmin && (
+                                                    <Link
+                                                        to="/admin"
+                                                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-app-text hover:bg-app-cream transition-colors group"
+                                                    >
+                                                        <div className="size-8 rounded-lg bg-amber-50 flex-center">
+                                                            <SparklesIcon className="size-4 text-amber-500" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-semibold text-xs">Admin Panel</p>
+                                                            <p className="text-[10px] text-app-text-lighter">Manage store</p>
+                                                        </div>
+                                                    </Link>
+                                                )}
+                                            </div>
+
+                                            {/* Sign Out */}
+                                            <div className="border-t border-app-border-light">
+                                                <button
+                                                    id="sign-out-button"
+                                                    onClick={handleSignOut}
+                                                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors group"
+                                                >
+                                                    <div className="size-8 rounded-lg bg-red-50 flex-center group-hover:bg-red-100 transition-colors">
+                                                        <LogOutIcon className="size-4 text-red-400 group-hover:text-red-600 transition-colors" />
+                                                    </div>
+                                                    <p className="font-bold text-xs">Sign Out</p>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             ) : (
                                 <Link to="/login" className="flex items-center gap-2.5 px-5 py-2.5 bg-app-cream rounded-full hover:bg-[#071912] hover:text-white transition-all group border border-app-border-light">
                                     <UserIcon className="size-4.5" />
